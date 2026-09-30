@@ -163,6 +163,42 @@ body {
   border-radius: 4px;
 }
 
+.slide--content .body table {
+  border-collapse: collapse;
+  max-width: 100%;
+  margin: 0.8em 0;
+  font-size: 0.9em;
+}
+
+.slide--content .body th,
+.slide--content .body td {
+  padding: 0.5em 1em;
+  border: 1px solid #d5dae3;
+  text-align: left;
+  vertical-align: top;
+}
+
+.slide--content .body th[align="center"],
+.slide--content .body td[align="center"] {
+  text-align: center;
+}
+
+.slide--content .body th[align="right"],
+.slide--content .body td[align="right"] {
+  text-align: right;
+}
+
+.slide--content .body th {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.slide--content .body tbody tr:nth-child(even) {
+  background: #f6f8fc;
+}
+
 /* ---------- chrome: nav / progress ---------- */
 .deck-nav {
   position: fixed;
