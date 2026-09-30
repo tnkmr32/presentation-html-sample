@@ -48,6 +48,7 @@ function splitSections(body) {
 
 // content/slides.md 1ファイルから構成を組み立てる:
 //   - 先頭の `#` (h1) -> タイトルスライド
+//   - h1 と最初の区切り線 `---` の間のテキスト -> サブタイトル
 //   - 区切り線 `---` で分割した各セクション -> 本文スライド1枚
 //   - 各本文セクション先頭の `##` (h2) -> そのスライドのタイトル(目次にも使う)
 function loadDeck() {
@@ -69,6 +70,8 @@ function loadDeck() {
     throw new Error(`${SLIDES_FILE}: document must start with a "# タイトル" heading`);
   }
   const title = titleMatch[1].trim();
+  // h1 と最初の区切り線の間に書かれたテキストをサブタイトルとして扱う。
+  const subtitle = titleSection.slice(titleMatch[0].length).trim().replace(/\s*\n\s*/g, " ");
 
   const contentSlides = bodySections.map((section) => {
     const headingMatch = section.match(/^##\s+(.+?)\s*(?:\n|$)/);
@@ -79,7 +82,7 @@ function loadDeck() {
 
   return {
     title,
-    subtitle: data.subtitle || "",
+    subtitle,
     author: data.author || "",
     date: data.date,
     contentSlides,
