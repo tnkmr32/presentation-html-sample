@@ -1,0 +1,16 @@
+{
+  "name": "presentation-html-sample",
+  "version": "1.0.0",
+  "description": "Markdown + 画像でコンテンツを管理する HTML/CSS プレゼンテーション",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build": "node build.js",
+    "serve": "npx --yes serve dist"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "marked": "^18.0.14"
+  }
+}
