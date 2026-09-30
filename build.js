@@ -4,7 +4,7 @@ const matter = require("gray-matter");
 const { marked } = require("marked");
 
 const ROOT = __dirname;
-const SLIDES_DIR = path.join(ROOT, "content", "slides");
+const SLIDES_FILE = path.join(ROOT, "content", "slides.md");
 const IMAGES_DIR = path.join(ROOT, "content", "images");
 const SRC_DIR = path.join(ROOT, "src");
 const DIST_DIR = path.join(ROOT, "dist");
@@ -19,24 +19,71 @@ function escapeHtml(str) {
   }[c]));
 }
 
-function loadSlides() {
-  const files = fs
-    .readdirSync(SLIDES_DIR)
-    .filter((f) => f.endsWith(".md"))
-    .sort();
+// コードブロックの外側にある独立した `---` 行(区切り線)でテキストを分割する。
+function splitSections(body) {
+  const lines = body.split("\n");
+  const sections = [];
+  let current = [];
+  let fenceChar = null;
 
-  if (files.length === 0) {
-    throw new Error(`No markdown files found in ${SLIDES_DIR}`);
+  for (const line of lines) {
+    const fenceMatch = line.match(/^\s*(`{3,}|~{3,})/);
+    if (fenceMatch) {
+      const marker = fenceMatch[1][0];
+      fenceChar = fenceChar === marker ? null : fenceChar === null ? marker : fenceChar;
+      current.push(line);
+      continue;
+    }
+    if (fenceChar === null && /^-{3,}\s*$/.test(line.trim())) {
+      sections.push(current.join("\n"));
+      current = [];
+      continue;
+    }
+    current.push(line);
+  }
+  sections.push(current.join("\n"));
+
+  return sections.map((s) => s.trim()).filter(Boolean);
+}
+
+// content/slides.md 1ファイルから構成を組み立てる:
+//   - 先頭の `#` (h1) -> タイトルスライド
+//   - 区切り線 `---` で分割した各セクション -> 本文スライド1枚
+//   - 各本文セクション先頭の `##` (h2) -> そのスライドのタイトル(目次にも使う)
+function loadDeck() {
+  if (!fs.existsSync(SLIDES_FILE)) {
+    throw new Error(`Slide file not found: ${SLIDES_FILE}`);
   }
 
-  return files.map((file) => {
-    const raw = fs.readFileSync(path.join(SLIDES_DIR, file), "utf8");
-    const { data, content } = matter(raw);
-    if (!data.type) {
-      throw new Error(`${file}: frontmatter must include "type" (title | toc | content)`);
-    }
-    return { file, data, body: content.trim() };
+  const raw = fs.readFileSync(SLIDES_FILE, "utf8");
+  const { data, content } = matter(raw);
+  const sections = splitSections(content.trim());
+
+  if (sections.length === 0) {
+    throw new Error(`${SLIDES_FILE}: no content found`);
+  }
+
+  const [titleSection, ...bodySections] = sections;
+  const titleMatch = titleSection.match(/^#\s+(.+?)\s*(?:\n|$)/);
+  if (!titleMatch) {
+    throw new Error(`${SLIDES_FILE}: document must start with a "# タイトル" heading`);
+  }
+  const title = titleMatch[1].trim();
+
+  const contentSlides = bodySections.map((section) => {
+    const headingMatch = section.match(/^##\s+(.+?)\s*(?:\n|$)/);
+    const heading = headingMatch ? headingMatch[1].trim() : "";
+    const body = headingMatch ? section.slice(headingMatch[0].length).trim() : section;
+    return { title: heading, body };
   });
+
+  return {
+    title,
+    subtitle: data.subtitle || "",
+    author: data.author || "",
+    date: data.date,
+    contentSlides,
+  };
 }
 
 function formatDate(value) {
@@ -49,49 +96,33 @@ function formatDate(value) {
   return value;
 }
 
-function renderTitleSlide({ data }) {
-  const meta = [data.author, formatDate(data.date)].filter(Boolean);
+function renderTitleSlide(deck) {
+  const meta = [deck.author, formatDate(deck.date)].filter(Boolean);
   return `
     <section class="slide slide--title">
-      <h1>${escapeHtml(data.title || "")}</h1>
-      ${data.subtitle ? `<p class="subtitle">${escapeHtml(data.subtitle)}</p>` : ""}
+      <h1>${escapeHtml(deck.title)}</h1>
+      ${deck.subtitle ? `<p class="subtitle">${escapeHtml(deck.subtitle)}</p>` : ""}
       ${meta.length ? `<div class="meta">${meta.map((m) => `<span>${escapeHtml(m)}</span>`).join("")}</div>` : ""}
     </section>`;
 }
 
-function renderTocSlide({ data, body }, contentSlides) {
-  const items = Array.isArray(data.items) && data.items.length
-    ? data.items
-    : contentSlides.map((s) => s.data.title || s.file);
-
+function renderTocSlide(contentSlides) {
+  const items = contentSlides.map((s) => s.title).filter(Boolean);
   return `
     <section class="slide slide--toc">
-      <h1>${escapeHtml(data.title || "目次")}</h1>
+      <h1>目次</h1>
       <ol>
         ${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("\n        ")}
       </ol>
     </section>`;
 }
 
-function renderContentSlide({ data, body }) {
+function renderContentSlide(slide) {
   return `
     <section class="slide slide--content">
-      <header><h1>${escapeHtml(data.title || "")}</h1></header>
-      <div class="body">${marked.parse(body || "")}</div>
+      <header><h1>${escapeHtml(slide.title)}</h1></header>
+      <div class="body">${marked.parse(slide.body || "")}</div>
     </section>`;
-}
-
-function renderSlide(slide, contentSlides) {
-  switch (slide.data.type) {
-    case "title":
-      return renderTitleSlide(slide);
-    case "toc":
-      return renderTocSlide(slide, contentSlides);
-    case "content":
-      return renderContentSlide(slide);
-    default:
-      throw new Error(`${slide.file}: unknown type "${slide.data.type}"`);
-  }
 }
 
 function copyDir(src, dest) {
@@ -108,16 +139,19 @@ function copyDir(src, dest) {
   }
 }
 
-function buildHtml(slides, contentSlides) {
-  const deckTitle = slides.find((s) => s.data.type === "title")?.data.title || "Presentation";
-  const slidesHtml = slides.map((s) => renderSlide(s, contentSlides)).join("\n");
+function buildHtml(deck) {
+  const slidesHtml = [
+    renderTitleSlide(deck),
+    ...(deck.contentSlides.length ? [renderTocSlide(deck.contentSlides)] : []),
+    ...deck.contentSlides.map(renderContentSlide),
+  ].join("\n");
 
   return `<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${escapeHtml(deckTitle)}</title>
+<title>${escapeHtml(deck.title)}</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -125,9 +159,7 @@ function buildHtml(slides, contentSlides) {
 ${slidesHtml}
 </div>
 <div class="deck-nav">
-  <button type="button" data-prev aria-label="前のスライド">&#8592;</button>
   <span><span data-current>1</span> / <span data-total>1</span></span>
-  <button type="button" data-next aria-label="次のスライド">&#8594;</button>
 </div>
 <script src="deck.js"></script>
 </body>
@@ -139,16 +171,16 @@ function main() {
   fs.rmSync(DIST_DIR, { recursive: true, force: true });
   fs.mkdirSync(DIST_DIR, { recursive: true });
 
-  const slides = loadSlides();
-  const contentSlides = slides.filter((s) => s.data.type === "content");
-  const html = buildHtml(slides, contentSlides);
+  const deck = loadDeck();
+  const html = buildHtml(deck);
+  const slideCount = 1 + (deck.contentSlides.length ? 1 : 0) + deck.contentSlides.length;
 
   fs.writeFileSync(path.join(DIST_DIR, "index.html"), html);
   fs.copyFileSync(path.join(SRC_DIR, "style.css"), path.join(DIST_DIR, "style.css"));
   fs.copyFileSync(path.join(SRC_DIR, "deck.js"), path.join(DIST_DIR, "deck.js"));
   copyDir(IMAGES_DIR, path.join(DIST_DIR, "images"));
 
-  console.log(`Built ${slides.length} slides -> ${path.relative(ROOT, DIST_DIR)}/index.html`);
+  console.log(`Built ${slideCount} slides -> ${path.relative(ROOT, DIST_DIR)}/index.html`);
 }
 
 main();

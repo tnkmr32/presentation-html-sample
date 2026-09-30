@@ -35,11 +35,6 @@
     }
   });
 
-  var nextBtn = document.querySelector("[data-next]");
-  var prevBtn = document.querySelector("[data-prev]");
-  if (nextBtn) nextBtn.addEventListener("click", next);
-  if (prevBtn) prevBtn.addEventListener("click", prev);
-
   if (total) total.textContent = slides.length;
 
   var initial = parseInt((location.hash || "").replace("#", ""), 10);
