@@ -1,11 +1,11 @@
 ---
 paths:
-  - "content/**"
+  - "products/*/content/**"
 ---
 
 # スライドの記述ルール
 
-`content/slides.md` と `content/images/` を作成・編集するときのルール。
+`products/<name>/content/slides.md` と `products/<name>/content/images/` を作成・編集するときのルール。
 記法の詳細は README の「コンテンツの追加・編集」を参照。
 
 ## 構成
@@ -27,7 +27,8 @@ paths:
 
 ## 画像
 
-- `content/images/` に置き、`images/ファイル名` で参照する。
+- 同じデッキの `products/<name>/content/images/` に置き、`images/ファイル名` で参照する
+  (他のデッキの画像は参照できない。必要ならコピーする)。
 - グラフ・図は SVG で作る。`viewBox` を指定し、全面の背景 `<rect>` を
   `width` = viewBox の幅で置く(`npm run check` が背景色として扱う)。
 - SVG 内の文字は 16px 以上、色は `fill` 属性で直接指定する。

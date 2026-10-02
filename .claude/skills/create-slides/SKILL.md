@@ -1,6 +1,6 @@
 ---
 name: create-slides
-description: スライド(content/slides.md と content/images/)を「計画 → 作成 → 検証」のループで作成する。計画・作成・検証はそれぞれ slide-planner / slide-creator / slide-verifier サブエージェントが行い、各ステップは Markdown のレポートで引き継ぐ。検証が不合格なら計画からやり直す。スライド・プレゼン資料・デッキを新しく作る、作り直す、内容を大きく変えるよう頼まれたときに使う。
+description: スライド(products/<name>/content/ の slides.md と images/)を「計画 → 作成 → 検証」のループで作成する。計画・作成・検証はそれぞれ slide-planner / slide-creator / slide-verifier サブエージェントが行い、各ステップは Markdown のレポートで引き継ぐ。検証が不合格なら計画からやり直す。スライド・プレゼン資料・デッキを新しく作る、作り直す、内容を大きく変えるよう頼まれたときに使う。
 argument-hint: "[テーマ・目的・対象者・データなど]"
 ---
 
@@ -13,17 +13,26 @@ argument-hint: "[テーマ・目的・対象者・データなど]"
 
 依頼内容: $ARGUMENTS
 
+スライドは `products/<name>/` 単位で管理する(1ディレクトリ = 1デッキ)。以下では
+`<P>` = `products/<name>`、`<R>` = `<P>/reports/<ラン ID>` と表記する。
+サブエージェントへ渡すときは `<P>`・`<R>` を実際のパスに置き換える。
+
 ## 手順 0: 準備
 
-1. **既存スライドの保護**: `git status --porcelain content/` を確認する。
-   未コミットの変更があれば、上書きしてよいかユーザーに確認してから進む。
-2. **ラン ID** を `<YYYYMMDD>-<英小文字のケバブケースの slug>` で決め、
-   `reports/<ラン ID>/` を作る。
-3. **ブリーフ作成**: 依頼内容を `.claude/skills/create-slides/templates/brief.md` の形式で
-   `reports/<ラン ID>/brief.md` に書く。目的・対象者・発表時間が依頼から読み取れず、
+1. **対象スライドの決定**: `ls products/` で既存のスライドを確認する。
+   - 依頼が既存スライドの作り直し・修正なら、その `<name>` を使う。
+     どれか判別できなければユーザーに確認する。
+   - 新規なら、デッキの内容を表す英小文字のケバブケースで `<name>` を決める
+     (例: `products/sales-review-2026q3/`)。既存と重複したら別名にする。
+2. **既存スライドの保護**: 既存スライドの場合は `git status --porcelain <P>/content/` を
+   確認し、未コミットの変更があれば上書きしてよいかユーザーに確認してから進む。
+   **対象以外の `products/*` には触れない。**
+3. **ラン ID** を `<YYYYMMDD>-<英小文字のケバブケースの slug>` で決め、`<R>/` を作る。
+4. **ブリーフ作成**: 依頼内容を `.claude/skills/create-slides/templates/brief.md` の形式で
+   `<R>/brief.md` に書く。目的・対象者・発表時間が依頼から読み取れず、
    推測すると方向性を大きく外す場合だけ、ユーザーにまとめて質問する。
    それ以外は「未確定事項」に書き、計画エージェントに仮定を置かせる。
-4. 依存関係が入っていなければ `npm ci` を実行しておく。
+5. 依存関係が入っていなければ `npm ci` を実行しておく。
 
 ## 手順 1〜3: ループ(N = 1 から開始、最大 3 周)
 
@@ -34,11 +43,12 @@ argument-hint: "[テーマ・目的・対象者・データなど]"
 ### 1. 計画 — `slide-planner`
 
 ```
-ラン ディレクトリ: reports/<ラン ID>/
+対象スライド: <P>/
+ラン ディレクトリ: <R>/
 周回: <N>
-ブリーフ: reports/<ラン ID>/brief.md
-前回の検証レポート: reports/<ラン ID>/iter-<N-1>/3-verify.md   ← 2周目以降のみ
-出力先: reports/<ラン ID>/iter-<N>/1-plan.md
+ブリーフ: <R>/brief.md
+前回の検証レポート: <R>/iter-<N-1>/3-verify.md   ← 2周目以降のみ
+出力先: <R>/iter-<N>/1-plan.md
 ```
 
 完了後、計画レポートの「7. 仮定・未確定事項」に**要確認データ**があれば、
@@ -48,22 +58,24 @@ argument-hint: "[テーマ・目的・対象者・データなど]"
 ### 2. 作成 — `slide-creator`
 
 ```
-ラン ディレクトリ: reports/<ラン ID>/
+対象スライド: <P>/
+ラン ディレクトリ: <R>/
 周回: <N>
-計画レポート: reports/<ラン ID>/iter-<N>/1-plan.md
-前回の作成レポート: reports/<ラン ID>/iter-<N-1>/2-create.md   ← 2周目以降のみ
-出力先: reports/<ラン ID>/iter-<N>/2-create.md
+計画レポート: <R>/iter-<N>/1-plan.md
+前回の作成レポート: <R>/iter-<N-1>/2-create.md   ← 2周目以降のみ
+出力先: <R>/iter-<N>/2-create.md
 ```
 
 ### 3. 検証 — `slide-verifier`
 
 ```
-ラン ディレクトリ: reports/<ラン ID>/
+対象スライド: <P>/
+ラン ディレクトリ: <R>/
 周回: <N>
-ブリーフ: reports/<ラン ID>/brief.md
-計画レポート: reports/<ラン ID>/iter-<N>/1-plan.md
-作成レポート: reports/<ラン ID>/iter-<N>/2-create.md
-出力先: reports/<ラン ID>/iter-<N>/3-verify.md
+ブリーフ: <R>/brief.md
+計画レポート: <R>/iter-<N>/1-plan.md
+作成レポート: <R>/iter-<N>/2-create.md
+出力先: <R>/iter-<N>/3-verify.md
 ```
 
 ### 判定
@@ -81,12 +93,13 @@ argument-hint: "[テーマ・目的・対象者・データなど]"
 
 ## 手順 4: 完了
 
-`reports/<ラン ID>/summary.md` に以下を書く。
+`<R>/summary.md` に以下を書く。
 
 - 最終判定(合格 / 未完了)と周回数
 - 周回ごとの判定と主な指摘(各 `3-verify.md` へのリンク)
-- 成果物: `content/slides.md`、使用画像、スライド枚数
+- 成果物: `<P>/content/slides.md`、使用画像、スライド枚数
 - 残っている推奨事項
 
-最後にユーザーへ、結果・`summary.md` のパス・`npm run serve` で確認できることを伝える。
+最後にユーザーへ、結果・`summary.md` のパス・確認方法(`<P>/dist/index.html` を開く、
+または `npm run serve` で `/<name>/dist/` を開く)を伝える。
 コミットはユーザーの指示がある場合のみ行う。

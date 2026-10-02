@@ -1,5 +1,6 @@
 # 作成レポート(iter-<N>)
 
+- 対象スライド: `products/<name>/`
 - ラン ID: <YYYYMMDD-slug>
 - 入力: `iter-<N>/1-plan.md`
 
@@ -7,8 +8,8 @@
 
 | ファイル | 操作 | 内容 |
 | --- | --- | --- |
-| `content/slides.md` | 作成 / 更新 | <N 枚> |
-| `content/images/xxx.svg` | 作成 / 更新 / 削除 | |
+| `<P>/content/slides.md` | 作成 / 更新 | <N 枚> |
+| `<P>/content/images/xxx.svg` | 作成 / 更新 / 削除 | |
 
 ## 2. 計画との対応
 
@@ -24,14 +25,14 @@
 
 ## 4. セルフチェック
 
-`npm run build` と `npm run check` の結果をそのまま貼る。
+`npm run build -- <name>` と `npm run check -- <name>` の結果をそのまま貼る。
 
 ```
-<npm run build の出力>
+<npm run build -- <name> の出力>
 ```
 
 ```
-<npm run check の出力>
+<npm run check -- <name> の出力>
 ```
 
 - 残っている warning と、その扱い(分割した / 許容する理由):

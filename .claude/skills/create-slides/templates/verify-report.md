@@ -1,7 +1,8 @@
 # 検証レポート(iter-<N>)
 
+- 対象スライド: `products/<name>/`
 - ラン ID: <YYYYMMDD-slug>
-- 入力: `brief.md`、`iter-<N>/1-plan.md`、`iter-<N>/2-create.md`、`content/slides.md`、`content/images/`、`dist/index.html`
+- 入力: `brief.md`、`iter-<N>/1-plan.md`、`iter-<N>/2-create.md`、`<P>/content/slides.md`、`<P>/content/images/`、`<P>/dist/index.html`
 
 ## 判定: <合格 / 不合格>
 
@@ -9,7 +10,7 @@
 
 ## 1. 自動チェック結果
 
-検証エージェント自身が `npm run build && npm run check` を実行した結果。
+検証エージェント自身が `npm run build -- <name> && npm run check -- <name>` を実行した結果。
 
 ```
 <出力>
@@ -35,7 +36,7 @@
 | F-2.4.6 | 必須 | | |
 | F-3.1.1 | 必須 | | |
 | F-3.1.2 | 推奨 | | |
-| テンプレート担保項目 | 必須 | | `src/`・`build.js` の変更有無 |
+| テンプレート担保項目 | 必須 | | `src/`・`build.js`・`scripts/` の変更有無 |
 | F-BUILD | 必須 | | |
 | F-DENSITY | 必須 | | |
 | F-ONEMSG | 必須 | | |

@@ -1,5 +1,6 @@
 # 計画レポート(iter-<N>)
 
+- 対象スライド: `products/<name>/`
 - ラン ID: <YYYYMMDD-slug>
 - 入力: `brief.md`<、`iter-<N-1>/3-verify.md`>
 

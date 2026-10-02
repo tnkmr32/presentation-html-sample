@@ -2,15 +2,12 @@ const fs = require("fs");
 const path = require("path");
 const matter = require("gray-matter");
 const { marked } = require("marked");
+const { ROOT, resolveProducts } = require("./scripts/products");
 
 // Markdown 内の単一改行もスライド上で改行(<br>)として表示する。
 marked.setOptions({ breaks: true });
 
-const ROOT = __dirname;
-const SLIDES_FILE = path.join(ROOT, "content", "slides.md");
-const IMAGES_DIR = path.join(ROOT, "content", "images");
 const SRC_DIR = path.join(ROOT, "src");
-const DIST_DIR = path.join(ROOT, "dist");
 
 function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, (c) => ({
@@ -49,28 +46,29 @@ function splitSections(body) {
   return sections.map((s) => s.trim()).filter(Boolean);
 }
 
-// content/slides.md 1ファイルから構成を組み立てる:
+// products/<name>/content/slides.md 1ファイルから構成を組み立てる:
 //   - 先頭の `#` (h1) -> タイトルスライド
 //   - h1 と最初の区切り線 `---` の間のテキスト -> サブタイトル
 //   - 区切り線 `---` で分割した各セクション -> 本文スライド1枚
 //   - 各本文セクション先頭の `##` (h2) -> そのスライドのタイトル(目次にも使う)
-function loadDeck() {
-  if (!fs.existsSync(SLIDES_FILE)) {
-    throw new Error(`Slide file not found: ${SLIDES_FILE}`);
+function loadDeck(slidesFile) {
+  const label = path.relative(ROOT, slidesFile);
+  if (!fs.existsSync(slidesFile)) {
+    throw new Error(`Slide file not found: ${label}`);
   }
 
-  const raw = fs.readFileSync(SLIDES_FILE, "utf8");
+  const raw = fs.readFileSync(slidesFile, "utf8");
   const { data, content } = matter(raw);
   const sections = splitSections(content.trim());
 
   if (sections.length === 0) {
-    throw new Error(`${SLIDES_FILE}: no content found`);
+    throw new Error(`${label}: no content found`);
   }
 
   const [titleSection, ...bodySections] = sections;
   const titleMatch = titleSection.match(/^#\s+(.+?)\s*(?:\n|$)/);
   if (!titleMatch) {
-    throw new Error(`${SLIDES_FILE}: document must start with a "# タイトル" heading`);
+    throw new Error(`${label}: document must start with a "# タイトル" heading`);
   }
   const title = titleMatch[1].trim();
   // h1 と最初の区切り線の間に書かれたテキストをサブタイトルとして扱う。
@@ -173,20 +171,28 @@ ${slidesHtml}
 `;
 }
 
-function main() {
-  fs.rmSync(DIST_DIR, { recursive: true, force: true });
-  fs.mkdirSync(DIST_DIR, { recursive: true });
+function buildProduct(product) {
+  const { distDir } = product;
+  fs.rmSync(distDir, { recursive: true, force: true });
+  fs.mkdirSync(distDir, { recursive: true });
 
-  const deck = loadDeck();
+  const deck = loadDeck(product.slidesFile);
   const html = buildHtml(deck);
   const slideCount = 1 + (deck.contentSlides.length ? 1 : 0) + deck.contentSlides.length;
 
-  fs.writeFileSync(path.join(DIST_DIR, "index.html"), html);
-  fs.copyFileSync(path.join(SRC_DIR, "style.css"), path.join(DIST_DIR, "style.css"));
-  fs.copyFileSync(path.join(SRC_DIR, "deck.js"), path.join(DIST_DIR, "deck.js"));
-  copyDir(IMAGES_DIR, path.join(DIST_DIR, "images"));
+  fs.writeFileSync(path.join(distDir, "index.html"), html);
+  fs.copyFileSync(path.join(SRC_DIR, "style.css"), path.join(distDir, "style.css"));
+  fs.copyFileSync(path.join(SRC_DIR, "deck.js"), path.join(distDir, "deck.js"));
+  copyDir(product.imagesDir, path.join(distDir, "images"));
 
-  console.log(`Built ${slideCount} slides -> ${path.relative(ROOT, DIST_DIR)}/index.html`);
+  console.log(`[${product.name}] Built ${slideCount} slides -> ${path.relative(ROOT, distDir)}/index.html`);
+}
+
+// node build.js [product...]  引数を省略すると products/ 配下をすべてビルドする。
+function main() {
+  for (const product of resolveProducts(process.argv.slice(2))) {
+    buildProduct(product);
+  }
 }
 
 main();

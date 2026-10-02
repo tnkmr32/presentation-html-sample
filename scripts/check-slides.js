@@ -1,9 +1,10 @@
-// ビルド済みの dist/index.html と src/style.css、content/images/*.svg を対象に、
-// 固定の合格基準(.claude/rules/slide-acceptance-criteria.md)のうち機械的に
-// 判定できる項目を検査する。
+// 各プロダクトのビルド済み products/<name>/dist/index.html と content/images/*.svg、
+// 共通の src/style.css を対象に、固定の合格基準
+// (.claude/rules/slide-acceptance-criteria.md)のうち機械的に判定できる項目を検査する。
 //
-//   node scripts/check-slides.js            結果を Markdown で標準出力に出す
-//   node scripts/check-slides.js --json     結果を JSON で出す
+//   node scripts/check-slides.js [product...]          結果を Markdown で標準出力に出す
+//                                                      (product 省略時は全プロダクト)
+//   node scripts/check-slides.js [product...] --json   結果を JSON で出す
 //   node scripts/check-slides.js contrast <前景色> <背景色>   コントラスト比を計算する
 //
 // error が1件でもあれば終了コード 1 を返す。warning は人(検証エージェント)が判断する。
@@ -11,10 +12,9 @@
 const fs = require("fs");
 const path = require("path");
 
-const ROOT = path.join(__dirname, "..");
-const DIST_HTML = path.join(ROOT, "dist", "index.html");
+const { ROOT, resolveProducts } = require("./products");
+
 const STYLE_CSS = path.join(ROOT, "src", "style.css");
-const IMAGES_DIR = path.join(ROOT, "content", "images");
 
 // 分量の目安(超えたら warning)。値の根拠は slide-acceptance-criteria.md を参照。
 const LIMITS = {
@@ -140,12 +140,14 @@ function attr(tag, name) {
   return m ? (m[2] !== undefined ? m[2] : m[3]) : null;
 }
 
-function checkHtml() {
-  if (!fs.existsSync(DIST_HTML)) {
-    report("error", "BUILD", "dist/index.html", "ビルド成果物がない。先に npm run build を実行すること");
+function checkHtml(product) {
+  const distHtml = path.join(product.distDir, "index.html");
+  const label = path.relative(ROOT, distHtml);
+  if (!fs.existsSync(distHtml)) {
+    report("error", "BUILD", label, `ビルド成果物がない。先に npm run build -- ${product.name} を実行すること`);
     return;
   }
-  const html = fs.readFileSync(DIST_HTML, "utf8");
+  const html = fs.readFileSync(distHtml, "utf8");
 
   const lang = (html.match(/<html[^>]*\slang="([^"]*)"/) || [])[1];
   if (!lang) report("error", "F-3.1.1", "<html>", "lang 属性がない");
@@ -154,7 +156,7 @@ function checkHtml() {
   if (!title || !title.trim()) report("error", "F-2.4.2", "<title>", "ページタイトルが空");
 
   const slides = html.match(/<section class="slide[\s\S]*?<\/section>/g) || [];
-  if (slides.length === 0) report("error", "BUILD", "dist/index.html", "スライドが1枚もない");
+  if (slides.length === 0) report("error", "BUILD", label, "スライドが1枚もない");
 
   slides.forEach((slide, i) => {
     const no = `slide ${i + 1}`;
@@ -167,7 +169,7 @@ function checkHtml() {
       if (alt === null) report("error", "F-1.1.1", `${no} ${src}`, "alt 属性がない");
       else if (!alt.trim()) report("warning", "F-1.1.1", `${no} ${src}`, "alt が空(装飾画像として扱われる)。情報を持つ画像なら代替テキストが必要");
       else if (/^(画像|image|図|写真|sample)$/i.test(alt.trim())) report("error", "F-1.1.1", `${no} ${src}`, `alt "${alt}" が内容を説明していない`);
-      if (src && !/^(https?:|data:)/.test(src) && !fs.existsSync(path.join(ROOT, "dist", src))) {
+      if (src && !/^(https?:|data:)/.test(src) && !fs.existsSync(path.join(product.distDir, src))) {
         report("error", "BUILD", `${no} ${src}`, "参照先の画像ファイルが存在しない");
       }
     }
@@ -198,17 +200,17 @@ function checkHtml() {
 
   // 点滅・自動再生するメディアは使わない(F-2.2.2 / F-2.3.1)。
   if (/<(video|audio)\b[^>]*autoplay/i.test(html) || /<marquee|<blink/i.test(html)) {
-    report("error", "F-2.2.2", "dist/index.html", "自動再生・点滅する要素がある");
+    report("error", "F-2.2.2", label, "自動再生・点滅する要素がある");
   }
 }
 
 // ---------- SVG images ----------
 
-function checkSvgs() {
-  if (!fs.existsSync(IMAGES_DIR)) return;
-  for (const file of fs.readdirSync(IMAGES_DIR).filter((f) => f.endsWith(".svg"))) {
-    const target = `content/images/${file}`;
-    const svg = fs.readFileSync(path.join(IMAGES_DIR, file), "utf8");
+function checkSvgs(product) {
+  if (!fs.existsSync(product.imagesDir)) return;
+  for (const file of fs.readdirSync(product.imagesDir).filter((f) => f.endsWith(".svg"))) {
+    const target = path.relative(ROOT, path.join(product.imagesDir, file));
+    const svg = fs.readFileSync(path.join(product.imagesDir, file), "utf8");
 
     if (/<script\b/i.test(svg)) report("error", "SAFETY", target, "SVG に script が含まれている");
     if (/<animate|<set\b|@keyframes/i.test(svg)) report("warning", "F-2.3.1", target, "アニメーションを含む。点滅(1秒に3回超)がないか目視確認すること");
@@ -267,8 +269,13 @@ function main() {
   }
 
   checkCss();
-  checkHtml();
-  checkSvgs();
+  for (const product of resolveProducts(args.filter((a) => !a.startsWith("--")))) {
+    const before = results.length;
+    checkHtml(product);
+    checkSvgs(product);
+    // スライド番号だけでは区別できないため、プロダクト名を対象に付ける。
+    for (const r of results.slice(before)) r.target = `[${product.name}] ${r.target}`;
+  }
 
   if (args.includes("--json")) console.log(JSON.stringify(results, null, 2));
   else printMarkdown();
