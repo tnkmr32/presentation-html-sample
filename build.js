@@ -3,6 +3,9 @@ const path = require("path");
 const matter = require("gray-matter");
 const { marked } = require("marked");
 
+// Markdown 内の単一改行もスライド上で改行(<br>)として表示する。
+marked.setOptions({ breaks: true });
+
 const ROOT = __dirname;
 const SLIDES_FILE = path.join(ROOT, "content", "slides.md");
 const IMAGES_DIR = path.join(ROOT, "content", "images");
@@ -71,7 +74,7 @@ function loadDeck() {
   }
   const title = titleMatch[1].trim();
   // h1 と最初の区切り線の間に書かれたテキストをサブタイトルとして扱う。
-  const subtitle = titleSection.slice(titleMatch[0].length).trim().replace(/\s*\n\s*/g, " ");
+  const subtitle = titleSection.slice(titleMatch[0].length).trim();
 
   const contentSlides = bodySections.map((section) => {
     const headingMatch = section.match(/^##\s+(.+?)\s*(?:\n|$)/);
@@ -104,7 +107,7 @@ function renderTitleSlide(deck) {
   return `
     <section class="slide slide--title">
       <h1>${escapeHtml(deck.title)}</h1>
-      ${deck.subtitle ? `<p class="subtitle">${escapeHtml(deck.subtitle)}</p>` : ""}
+      ${deck.subtitle ? `<p class="subtitle">${deck.subtitle.split(/\s*\n\s*/).map(escapeHtml).join("<br>")}</p>` : ""}
       ${meta.length ? `<div class="meta">${meta.map((m) => `<span>${escapeHtml(m)}</span>`).join("")}</div>` : ""}
     </section>`;
 }
