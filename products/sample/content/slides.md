@@ -29,9 +29,9 @@ date: 2026-09-30
 console.log("Hello, presentation!");
 ```
 
-1. `content/slides.md` に `##` 見出しと `---` を使ってスライドを追加
-2. 画像は `content/images/` に配置
-3. `npm run build` を実行すると `dist/` に出力されます
+1. `products/<name>/content/slides.md` に `##` 見出しと `---` を使ってスライドを追加
+2. 画像は `products/<name>/content/images/` に配置
+3. `npm run build -- <name>` を実行すると `products/<name>/dist/` に出力されます
 
 ---
 

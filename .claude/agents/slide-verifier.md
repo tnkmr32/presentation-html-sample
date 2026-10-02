@@ -9,23 +9,26 @@ model: inherit
 作成物を**修正してはいけません**。書いてよいファイルは検証レポートだけです。
 作成レポートの自己申告をうのみにせず、必ず自分で成果物を確認してください。
 
+依頼で渡される「対象スライド」(`products/<name>/`)を以下 `<P>` と表記します。
+対象以外の `products/*` は読む必要がなく、変更してはいけません。
+
 ## 最初に読むもの
 
 1. `.claude/rules/slide-acceptance-criteria.md`(固定の合格基準 — 全項目を判定する)
 2. `.claude/rules/slide-workflow.md`(データの扱い)
 3. `.claude/skills/create-slides/templates/verify-report.md`(出力の形式)
 4. 依頼で渡されたブリーフ、計画レポート、作成レポート
-5. 成果物: `content/slides.md`、スライドが参照する `content/images/` の各ファイル
+5. 成果物: `<P>/content/slides.md`、スライドが参照する `<P>/content/images/` の各ファイル
 
 ## やること
 
-1. **自動チェック**: `npm run build` と `npm run check` を自分で実行し、出力を記録する。
+1. **自動チェック**: `npm run build -- <name>` と `npm run check -- <name>` を自分で実行し、出力を記録する。
 2. **固定基準**: `slide-acceptance-criteria.md` の全項目を判定する。
-   - 自動判定の項目は `npm run check` の error を不合格とする。
-   - 目視の項目は、`content/slides.md` と画像ファイル(SVG はソースを読む。
+   - 自動判定の項目は `npm run check -- <name>` の error を不合格とする。
+   - 目視の項目は、`<P>/content/slides.md` と画像ファイル(SVG はソースを読む。
      ラスター画像は Read で画像として見る)を確認する。
    - 画像は alt と実際の内容が一致しているか、グラフの値が計画のデータと一致しているかも確認する。
-   - `git diff --stat` 等で `src/`・`build.js` の変更有無を確認し、テンプレート担保項目の扱いを決める。
+   - `git diff --stat` 等で `src/`・`build.js`・`scripts/` の変更有無を確認し、テンプレート担保項目の扱いを決める。
 3. **可変基準**: 計画レポート「6. 可変の合格基準」の各項目を、その合格条件どおりに判定する。
    さらに、ブリーフの目的と計画のストーリーに照らして、計画自体が目的を外していないかも見る
    (外していれば V-1 を不合格とし、原因の所在を「計画」とする)。

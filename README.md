@@ -1,8 +1,9 @@
 # presentation-html-sample
 
 Markdown と画像ファイルでコンテンツを管理する、HTML + CSS 製のプレゼンテーションです。
-`content/slides.md` 1ファイルを `npm run build` でビルドすると、`dist/` に単一の
-`index.html`(CSS/JS/画像込み)が生成されます。
+1つのリポジトリで複数のスライド(デッキ)を `products/<スライド名>/` 単位で管理します。
+各デッキの `content/slides.md` を `npm run build` でビルドすると、そのデッキの
+`dist/` に `index.html`(CSS/JS/画像込み)が生成されます。
 
 ## セットアップ
 
@@ -13,18 +14,30 @@ npm ci
 ## ビルド
 
 ```sh
-npm run build
+npm run build              # products/ 配下の全デッキをビルド
+npm run build -- <name>    # 指定したデッキだけビルド(複数指定可)
 ```
 
-`dist/index.html` を開くと発表できます。ローカルサーバーで確認する場合:
+`products/<name>/dist/index.html` を開くと発表できます。ローカルサーバーで確認する場合は
+`npm run serve` を実行し、`http://localhost:3000/<name>/dist/` を開いてください。
+
+## 新しいスライドを追加する
+
+`products/` の下にデッキ用のディレクトリ(名前は英小文字のケバブケース推奨)を作り、
+`content/slides.md` を置きます。
 
 ```sh
-npm run serve
+mkdir -p products/my-talk/content/images
+$EDITOR products/my-talk/content/slides.md
+npm run build -- my-talk
 ```
+
+既存のデッキをひな形にする場合は `cp -R products/sample/content products/my-talk/` などで
+コピーしてください。
 
 ## コンテンツの追加・編集
 
-### スライド (`content/slides.md`)
+### スライド (`products/<name>/content/slides.md`)
 
 1つの Markdown ファイルの見出しと区切り線からスライド構成を自動的に組み立てます。
 `type` のようなフロントマターの指定は不要です。
@@ -73,10 +86,10 @@ console.log("Hello, presentation!");
 ```
 ````
 
-### 画像 (`content/images/`)
+### 画像 (`products/<name>/content/images/`)
 
-`content/images/` に配置し、Markdown からは常に `images/ファイル名` の形式で参照してください
-(ビルド時に `dist/images/` へそのままコピーされます)。
+同じデッキの `content/images/` に配置し、Markdown からは常に `images/ファイル名` の形式で
+参照してください(ビルド時にそのデッキの `dist/images/` へそのままコピーされます)。
 
 ## ナビゲーション操作
 
@@ -86,35 +99,42 @@ console.log("Hello, presentation!");
 
 ## PDF 書き出し
 
-`dist/index.html` をブラウザで開き、印刷ダイアログから「PDFに保存」を選択してください。
+`products/<name>/dist/index.html` をブラウザで開き、印刷ダイアログから「PDFに保存」を選択してください。
 印刷用 CSS により 1 スライド = 1 ページで出力されます。
 
 ## ディレクトリ構成
 
 ```
-content/
-  slides.md … スライド本文 (Markdown 1ファイル)
-  images/    … 画像素材
-src/
-  style.css … スライドの見た目 (3パターン共通スタイル)
-  deck.js   … スライド送り用スクリプト
-build.js    … content/ を dist/ にビルドするスクリプト
-dist/       … ビルド成果物 (git管理対象外)
+products/
+  <name>/            … 1デッキ分(複数置ける)
+    content/
+      slides.md      … スライド本文 (Markdown 1ファイル)
+      images/        … 画像素材
+    reports/         … /create-slides のレポート
+    dist/            … ビルド成果物 (git管理対象外)
+src/                 … 全デッキ共通のテンプレート
+  style.css          … スライドの見た目 (3パターン共通スタイル)
+  deck.js            … スライド送り用スクリプト
+build.js             … products/<name>/content/ を products/<name>/dist/ にビルドするスクリプト
+scripts/
+  products.js        … デッキの一覧・パス解決
+  check-slides.js    … 合格基準の自動チェック (npm run check)
 ```
 
 ## Claude Code でスライドを作る(計画 → 作成 → 検証ループ)
 
 Claude Code で `/create-slides <テーマ・目的・対象者・データなど>` を実行すると、
-3つのサブエージェントが次のループでスライドを作成します。
+3つのサブエージェントが次のループでスライドを作成します。新規なら
+`products/<name>/` を新しく作り、既存デッキの作り直しならそのデッキを対象にします。
 
 1. **計画**(`slide-planner`): テーマ・ストーリー・スライド構成・必要なデータ・
    このラン固有の合格基準を定義
-2. **作成**(`slide-creator`): `content/slides.md` と `content/images/` を作成し、
-   `npm run build` / `npm run check` でセルフチェック
+2. **作成**(`slide-creator`): `products/<name>/content/` の `slides.md` と `images/` を作成し、
+   `npm run build -- <name>` / `npm run check -- <name>` でセルフチェック
 3. **検証**(`slide-verifier`): 固定の合格基準(WCAG 2.2 AA ほか)と計画で定義した
    可変の合格基準で評価。不合格なら指摘を添えて計画からやり直す(最大3周)
 
-各ステップのレポートは `reports/<YYYYMMDD>-<slug>/iter-<N>/` に Markdown で残ります。
+各ステップのレポートは `products/<name>/reports/<YYYYMMDD>-<slug>/iter-<N>/` に Markdown で残ります。
 
 | 種類 | 場所 |
 | --- | --- |
@@ -123,9 +143,10 @@ Claude Code で `/create-slides <テーマ・目的・対象者・データな�
 | ワークフローのルール | `.claude/rules/slide-workflow.md` |
 | 固定の合格基準 | `.claude/rules/slide-acceptance-criteria.md` |
 | スライドの記述ルール | `.claude/rules/slide-authoring.md` |
-| 自動チェック | `scripts/check-slides.js`(`npm run check`) |
+| 自動チェック | `scripts/check-slides.js`(`npm run check -- <name>`) |
 
-`npm run check` はビルド済みの `dist/index.html`・`src/style.css`・SVG 画像を対象に、
+`npm run check -- <name>`(省略時は全デッキ)はビルド済みの `products/<name>/dist/index.html`・
+`src/style.css`・そのデッキの SVG 画像を対象に、
 コントラスト比、画像の alt、見出し、リンクテキスト、表の見出しセル、1スライドの
 分量などを検査します(error があれば終了コード 1)。コントラスト比だけを調べる場合:
 

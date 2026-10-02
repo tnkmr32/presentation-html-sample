@@ -7,7 +7,7 @@
   "scripts": {
     "build": "node build.js",
     "check": "node scripts/check-slides.js",
-    "serve": "npx --yes serve dist"
+    "serve": "npx --yes serve products"
   },
   "license": "ISC",
   "dependencies": {

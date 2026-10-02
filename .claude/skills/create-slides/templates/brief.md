@@ -1,5 +1,6 @@
 # ブリーフ: <デッキのタイトル(仮)>
 
+- 対象スライド: `products/<name>/`(新規 / 既存)
 - ラン ID: <YYYYMMDD-slug>
 - 作成日: <YYYY-MM-DD>
 - 最大周回数: 3
