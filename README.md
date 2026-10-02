@@ -101,3 +101,34 @@ src/
 build.js    … content/ を dist/ にビルドするスクリプト
 dist/       … ビルド成果物 (git管理対象外)
 ```
+
+## Claude Code でスライドを作る(計画 → 作成 → 検証ループ)
+
+Claude Code で `/create-slides <テーマ・目的・対象者・データなど>` を実行すると、
+3つのサブエージェントが次のループでスライドを作成します。
+
+1. **計画**(`slide-planner`): テーマ・ストーリー・スライド構成・必要なデータ・
+   このラン固有の合格基準を定義
+2. **作成**(`slide-creator`): `content/slides.md` と `content/images/` を作成し、
+   `npm run build` / `npm run check` でセルフチェック
+3. **検証**(`slide-verifier`): 固定の合格基準(WCAG 2.2 AA ほか)と計画で定義した
+   可変の合格基準で評価。不合格なら指摘を添えて計画からやり直す(最大3周)
+
+各ステップのレポートは `reports/<YYYYMMDD>-<slug>/iter-<N>/` に Markdown で残ります。
+
+| 種類 | 場所 |
+| --- | --- |
+| スキル(ループ制御・レポートのテンプレート) | `.claude/skills/create-slides/` |
+| サブエージェント | `.claude/agents/slide-{planner,creator,verifier}.md` |
+| ワークフローのルール | `.claude/rules/slide-workflow.md` |
+| 固定の合格基準 | `.claude/rules/slide-acceptance-criteria.md` |
+| スライドの記述ルール | `.claude/rules/slide-authoring.md` |
+| 自動チェック | `scripts/check-slides.js`(`npm run check`) |
+
+`npm run check` はビルド済みの `dist/index.html`・`src/style.css`・SVG 画像を対象に、
+コントラスト比、画像の alt、見出し、リンクテキスト、表の見出しセル、1スライドの
+分量などを検査します(error があれば終了コード 1)。コントラスト比だけを調べる場合:
+
+```sh
+node scripts/check-slides.js contrast '#5b6472' '#ffffff'
+```
