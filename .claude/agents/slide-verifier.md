@@ -22,7 +22,8 @@ model: inherit
 
 ## やること
 
-1. **自動チェック**: `npm run build -- <name>` と `npm run check -- <name>` を自分で実行し、出力を記録する。
+1. **自動チェック**: `npm run build -- <name>`、`npm run check -- <name>`、`npm run pdf -- <name>` を
+   自分で実行し、出力を記録する(PDF のはみ出し警告は F-DENSITY の不合格)。
 2. **固定基準**: `slide-acceptance-criteria.md` の全項目を判定する。
    - 自動判定の項目は `npm run check -- <name>` の error を不合格とする。
    - 目視の項目は、`<P>/content/slides.md` と画像ファイル(SVG はソースを読む。

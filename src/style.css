@@ -214,10 +214,18 @@ body {
 }
 
 /* ---------- print / PDF export ---------- */
+/* 1スライド = 1ページ(16:9)。ブラウザの「PDFに保存」と npm run pdf の両方で使う。 */
+@page {
+  size: 1280px 720px;
+  margin: 0;
+}
+
 @media print {
   html,
   body {
     background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   .deck {
@@ -232,6 +240,17 @@ body {
     width: 100vw;
     height: 100vh;
     page-break-after: always;
+    break-after: page;
+  }
+
+  .slide:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  /* PDF ではぼかし影が灰色の矩形として描かれるため外す。 */
+  .slide--content .body img {
+    box-shadow: none;
   }
 
   .deck-nav {

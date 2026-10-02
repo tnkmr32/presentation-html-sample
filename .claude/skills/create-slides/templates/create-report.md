@@ -35,6 +35,10 @@
 <npm run check -- <name> の出力>
 ```
 
+```
+<npm run pdf -- <name> の出力>
+```
+
 - 残っている warning と、その扱い(分割した / 許容する理由):
   - <なし>
 

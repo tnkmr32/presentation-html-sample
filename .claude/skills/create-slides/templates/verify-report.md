@@ -10,7 +10,7 @@
 
 ## 1. 自動チェック結果
 
-検証エージェント自身が `npm run build -- <name> && npm run check -- <name>` を実行した結果。
+検証エージェント自身が `npm run build -- <name>`、`npm run check -- <name>`、`npm run pdf -- <name>` を実行した結果。
 
 ```
 <出力>

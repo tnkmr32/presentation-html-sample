@@ -7,11 +7,15 @@
   "scripts": {
     "build": "node build.js",
     "check": "node scripts/check-slides.js",
+    "pdf": "node scripts/export-pdf.js",
     "serve": "npx --yes serve products"
   },
   "license": "ISC",
   "dependencies": {
     "gray-matter": "^4.0.3",
     "marked": "^18.0.14"
+  },
+  "devDependencies": {
+    "puppeteer": "^25.12.0"
   }
 }
