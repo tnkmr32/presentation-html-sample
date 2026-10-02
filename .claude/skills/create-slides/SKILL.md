@@ -97,7 +97,7 @@ argument-hint: "[テーマ・目的・対象者・データなど]"
 
 - 最終判定(合格 / 未完了)と周回数
 - 周回ごとの判定と主な指摘(各 `3-verify.md` へのリンク)
-- 成果物: `<P>/content/slides.md`、使用画像、スライド枚数
+- 成果物: `<P>/content/slides.md`、使用画像、スライド枚数、PDF(`<P>/dist/<name>.pdf`)
 - 残っている推奨事項
 
 最後にユーザーへ、結果・`summary.md` のパス・確認方法(`<P>/dist/index.html` を開く、

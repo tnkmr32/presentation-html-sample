@@ -99,8 +99,16 @@ console.log("Hello, presentation!");
 
 ## PDF 書き出し
 
-`products/<name>/dist/index.html` をブラウザで開き、印刷ダイアログから「PDFに保存」を選択してください。
-印刷用 CSS により 1 スライド = 1 ページで出力されます。
+```sh
+npm run pdf -- <name>    # 指定したデッキを PDF に書き出す(省略時は全デッキ)
+```
+
+ビルドしてからヘッドレス Chrome(puppeteer)で開き、`products/<name>/dist/<name>.pdf` に
+1 スライド = 1 ページ(1280×720px、16:9)の PDF を出力します。PDF ではスクロールできないため、
+本文がスライドからはみ出しているスライドがあると警告を表示します。
+
+ブラウザで `products/<name>/dist/index.html` を開き、印刷ダイアログから「PDFに保存」を
+選んでも同じレイアウトで出力できます(「背景のグラフィック」を有効にしてください)。
 
 ## ディレクトリ構成
 
@@ -119,6 +127,7 @@ build.js             … products/<name>/content/ を products/<name>/dist/ に�
 scripts/
   products.js        … デッキの一覧・パス解決
   check-slides.js    … 合格基準の自動チェック (npm run check)
+  export-pdf.js      … PDF 書き出し (npm run pdf)
 ```
 
 ## Claude Code でスライドを作る(計画 → 作成 → 検証ループ)
