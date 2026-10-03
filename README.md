@@ -142,13 +142,17 @@ Claude Code で `/create-slides <テーマ・目的・対象者・データな�
    `npm run build -- <name>` / `npm run check -- <name>` でセルフチェック
 3. **検証**(`slide-verifier`): 固定の合格基準(WCAG 2.2 AA ほか)と計画で定義した
    可変の合格基準で評価。不合格なら指摘を添えて計画からやり直す(最大3周)
+4. **振り返り**(`slide-retrospective`): 合格してループが終わったあとに1回だけ実行。
+   検証で出た課題のうち計画・作成で防げたものを分析し、ループ設計
+   (agents / rules / skills)への対策案を `retrospective.md` に記載(反映はユーザーが判断)
 
-各ステップのレポートは `products/<name>/reports/<YYYYMMDD>-<slug>/iter-<N>/` に Markdown で残ります。
+各ステップのレポートは `products/<name>/reports/<YYYYMMDD>-<slug>/iter-<N>/` に、
+振り返りレポートはその1つ上の `retrospective.md` に Markdown で残ります。
 
 | 種類 | 場所 |
 | --- | --- |
 | スキル(ループ制御・レポートのテンプレート) | `.claude/skills/create-slides/` |
-| サブエージェント | `.claude/agents/slide-{planner,creator,verifier}.md` |
+| サブエージェント | `.claude/agents/slide-{planner,creator,verifier,retrospective}.md` |
 | ワークフローのルール | `.claude/rules/slide-workflow.md` |
 | 固定の合格基準 | `.claude/rules/slide-acceptance-criteria.md` |
 | スライドの記述ルール | `.claude/rules/slide-authoring.md` |
