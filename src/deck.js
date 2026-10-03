@@ -35,6 +35,13 @@
     }
   });
 
+  document.addEventListener("click", function (e) {
+    if (e.button !== 0 || e.target.closest("a, button, input, select, textarea")) return;
+    var selection = window.getSelection();
+    if (selection && !selection.isCollapsed) return;
+    next();
+  });
+
   if (total) total.textContent = slides.length;
 
   var initial = parseInt((location.hash || "").replace("#", ""), 10);
