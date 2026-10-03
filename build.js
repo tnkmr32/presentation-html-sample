@@ -51,6 +51,8 @@ function splitSections(body) {
 //   - h1 と最初の区切り線 `---` の間のテキスト -> サブタイトル
 //   - 区切り線 `---` で分割した各セクション -> 本文スライド1枚
 //   - 各本文セクション先頭の `##` (h2) -> そのスライドのタイトル(目次にも使う)
+//   - `#` (h1) だけの本文セクション -> セクション扉スライド(省略可)。1つでもあれば
+//     目次には `##` 見出しではなくセクション名を並べる
 function loadDeck(slidesFile) {
   const label = path.relative(ROOT, slidesFile);
   if (!fs.existsSync(slidesFile)) {
@@ -75,11 +77,23 @@ function loadDeck(slidesFile) {
   const subtitle = titleSection.slice(titleMatch[0].length).trim();
 
   const contentSlides = bodySections.map((section) => {
+    const sectionMatch = section.match(/^#\s+(.+?)\s*(?:\n|$)/);
+    if (sectionMatch) {
+      if (section.slice(sectionMatch[0].length).trim()) {
+        throw new Error(`${label}: section "${sectionMatch[1].trim()}" must contain only the "# セクション名" heading`);
+      }
+      return { kind: "section", title: sectionMatch[1].trim() };
+    }
     const headingMatch = section.match(/^##\s+(.+?)\s*(?:\n|$)/);
     const heading = headingMatch ? headingMatch[1].trim() : "";
     const body = headingMatch ? section.slice(headingMatch[0].length).trim() : section;
-    return { title: heading, body };
+    return { kind: "content", title: heading, body };
   });
+
+  // セクションを使う場合、すべての本文スライドがいずれかのセクションに属するようにする。
+  if (contentSlides.some((s) => s.kind === "section") && contentSlides[0].kind !== "section") {
+    throw new Error(`${label}: when using sections, the first slide after the title must be a "# セクション名" section`);
+  }
 
   return {
     title,
@@ -111,7 +125,8 @@ function renderTitleSlide(deck) {
 }
 
 function renderTocSlide(contentSlides) {
-  const items = contentSlides.map((s) => s.title).filter(Boolean);
+  const sections = contentSlides.filter((s) => s.kind === "section");
+  const items = (sections.length ? sections : contentSlides).map((s) => s.title).filter(Boolean);
   return `
     <section class="slide slide--toc">
       <h1>目次</h1>
@@ -121,7 +136,15 @@ function renderTocSlide(contentSlides) {
     </section>`;
 }
 
+function renderSectionSlide(slide) {
+  return `
+    <section class="slide slide--section">
+      <h1>${escapeHtml(slide.title)}</h1>
+    </section>`;
+}
+
 function renderContentSlide(slide) {
+  if (slide.kind === "section") return renderSectionSlide(slide);
   return `
     <section class="slide slide--content">
       <header><h1>${escapeHtml(slide.title)}</h1></header>
