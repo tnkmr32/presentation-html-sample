@@ -44,3 +44,27 @@ console.log("Hello, presentation!");
 | --- | --- |
 | 分割 | `---` 単独行 |
 | 見出し | 各セクション先頭の `## 見出し` がタイトルと目次になる |
+
+---
+
+## カラーパレット: アクセントカラー(ティールと青)
+
+面のアクセントはティール、文字のアクセントは青にし、ほかはモノトーンにします。
+
+| 名前 | 色 | 用途 | 背景とのコントラスト比 |
+| --- | --- | --- | --- |
+| アクセント | <span class="swatch" style="background: var(--accent)"></span>`#00B5C8` | 図形・グラフの主系列 | 2.28:1(文字には使わない) |
+| アクセント(文字用) | <span class="swatch" style="background: var(--accent-strong)"></span>`#3335E3` | **強調文字**・細線 | 6.98:1 |
+
+---
+
+## カラーパレット: 背景色と文字色(モノトーン)
+
+| 名前 | 色 | 用途 | 背景とのコントラスト比 |
+| --- | --- | --- | --- |
+| 文字 | <span class="swatch" style="background: var(--ink)"></span>`#222222` | 本文・見出し | 14.59:1 |
+| 補足文字 | <span class="swatch" style="background: var(--ink-soft)"></span>`#5C5C5C` | 補足・メタ情報・表の見出し行 | 6.13:1 |
+| 背景 | <span class="swatch" style="background: var(--paper)"></span>`#F5F5F5` | スライドの背景(真っ白より少し暗い) | — |
+| 面 | <span class="swatch" style="background: var(--surface)"></span>`#EBEBEB` | 表の縞・インラインコード・タイトルの背景 | — |
+| 罫線 | <span class="swatch" style="background: var(--line)"></span>`#D6D6D6` | 罫線・区切り線 | — |
+| 外側の背景 | <span class="swatch" style="background: var(--stage)"></span>`#111111` | スライドの外側 | — |

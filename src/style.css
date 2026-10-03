@@ -1,11 +1,22 @@
 :root {
-  --accent: #3556d1;
-  --accent-soft: #e8edfb;
-  --ink: #1c1f26;
-  --ink-soft: #5b6472;
-  --paper: #ffffff;
-  --stage: #14161b;
-  --code-bg: #1c1f26;
+  /* ---------- カラーパレット: モノトーン + ティール ----------
+     ベースカラー rgb(0, 181, 200) を面のアクセント、青 rgb(51, 53, 227) を文字のアクセントに使い、
+     それ以外はモノトーン(無彩色)で構成する。
+     コントラスト比は背景色 --paper(#f5f5f5)に対する値。文字は 4.5:1 以上、図形・線は 3:1 以上を使う。 */
+
+  /* アクセントカラー(ティール) */
+  --accent: #00b5c8;         /* ベースカラー。図形・グラフの主系列などの面に使う。
+                                背景上では 2.28:1 のため文字・細線には使わない(濃い文字 --ink を載せると 6.40:1) */
+  --accent-strong: #3335e3;  /* 文字用のアクセント rgb(51, 53, 227)。強調文字・細線(6.98:1、--surface 上で 6.38:1) */
+
+  /* 背景色・文字色(モノトーン) */
+  --ink: #222222;            /* 本文・見出し(14.59:1) */
+  --ink-soft: #5c5c5c;       /* 補足・メタ情報・表見出しの背景(6.13:1、--surface 上で 5.61:1) */
+  --paper: #f5f5f5;          /* スライドの背景。真っ白より明度を少し落とす */
+  --surface: #ebebeb;        /* 表の縞・インラインコード・タイトルのグラデーション(背景より一段暗い) */
+  --line: #d6d6d6;           /* 罫線・区切り線 */
+  --stage: #111111;          /* スライド外側の背景 */
+  --code-bg: #222222;        /* コードブロックの背景 */
   --font-sans: "BIZ UDPGothic", "BIZ UDPゴシック", "Hiragino Sans", "Yu Gothic", "Segoe UI", system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
@@ -51,18 +62,18 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
-  background: linear-gradient(160deg, var(--paper) 60%, var(--accent-soft) 100%);
+  background: linear-gradient(160deg, var(--paper) 60%, var(--surface) 100%);
 }
 
 .slide--title h1 {
   margin: 0;
-  font-size: clamp(2.2rem, 5.5vw, 4.5rem);
+  font-size: clamp(2.6rem, 6.6vw, 5.4rem);
   line-height: 1.25;
 }
 
 .slide--title .subtitle {
   margin: 1.2em 0 0;
-  font-size: clamp(1rem, 2vw, 1.6rem);
+  font-size: clamp(1.2rem, 2.4vw, 1.9rem);
   color: var(--ink-soft);
 }
 
@@ -71,14 +82,14 @@ body {
   bottom: 6vw;
   display: flex;
   gap: 1.5em;
-  font-size: clamp(0.8rem, 1.1vw, 1rem);
+  font-size: clamp(0.95rem, 1.35vw, 1.2rem);
   color: var(--ink-soft);
 }
 
 /* ---------- table of contents pattern ---------- */
 .slide--toc h1 {
   margin: 0 0 0.6em;
-  font-size: clamp(1.8rem, 3.6vw, 3rem);
+  font-size: clamp(2.1rem, 4.3vw, 3.6rem);
 }
 
 .slide--toc ol {
@@ -86,7 +97,7 @@ body {
   counter-reset: toc;
   margin: 0;
   padding: 0;
-  font-size: clamp(1.15rem, 2.2vw, 2rem);
+  font-size: clamp(1.35rem, 2.6vw, 2.4rem);
 }
 
 .slide--toc li {
@@ -100,8 +111,9 @@ body {
 .slide--toc li::before {
   content: counter(toc, decimal-leading-zero);
   font-weight: 700;
+  font-family: var(--font-mono);
   font-size: 0.65em;
-  color: var(--accent);
+  color: var(--ink);
   min-width: 1.6em;
 }
 
@@ -112,16 +124,14 @@ body {
 
 .slide--content h1 {
   margin: 0 0 0.6em;
-  padding-bottom: 0.4em;
-  font-size: clamp(1.6rem, 3.2vw, 2.6rem);
-  border-bottom: 3px solid var(--accent);
+  font-size: clamp(1.9rem, 3.8vw, 3.1rem);
 }
 
 .slide--content .body {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  font-size: clamp(1rem, 1.5vw, 1.35rem);
+  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
   line-height: 1.7;
 }
 
@@ -134,10 +144,20 @@ body {
   padding-left: 1.3em;
 }
 
+/* 項番は等幅フォントにして、桁数が変わっても位置を揃える。
+   等幅の数字は幅が広く、1.3em の字下げでは左端で切れるため ol だけ広げる。 */
+.slide--content .body ol {
+  padding-left: 2em;
+}
+
+.slide--content .body ol > li::marker {
+  font-family: var(--font-mono);
+}
+
 .slide--content .body img {
   display: block;
   max-width: 100%;
-  max-height: 42vh;
+  max-height: 35vh;
   margin: 0.8em auto;
   border-radius: 10px;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
@@ -153,12 +173,27 @@ body {
   font-family: var(--font-mono);
 }
 
+.slide--content .body strong {
+  color: var(--accent-strong);
+}
+
+/* カラーパレットの色見本。色は style 属性で var(--xxx) を指定する。 */
+.slide--content .body .swatch {
+  display: inline-block;
+  width: 1.1em;
+  height: 1.1em;
+  margin-right: 0.4em;
+  vertical-align: -0.15em;
+  border: 1px solid var(--ink-soft);
+  border-radius: 3px;
+}
+
 .slide--content .body code {
   font-family: var(--font-mono);
 }
 
 .slide--content .body :not(pre) > code {
-  background: var(--accent-soft);
+  background: var(--surface);
   padding: 0.15em 0.4em;
   border-radius: 4px;
 }
@@ -173,7 +208,7 @@ body {
 .slide--content .body th,
 .slide--content .body td {
   padding: 0.5em 1em;
-  border: 1px solid #d5dae3;
+  border: 1px solid var(--line);
   text-align: left;
   vertical-align: top;
 }
@@ -189,14 +224,14 @@ body {
 }
 
 .slide--content .body th {
-  background: var(--accent);
-  color: #fff;
+  background: var(--ink-soft);
+  color: var(--paper);
   font-weight: 600;
   white-space: nowrap;
 }
 
 .slide--content .body tbody tr:nth-child(even) {
-  background: #f6f8fc;
+  background: var(--surface);
 }
 
 /* ---------- chrome: nav / progress ---------- */
@@ -207,7 +242,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.8em;
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: var(--ink-soft);
   z-index: 10;
   user-select: none;
