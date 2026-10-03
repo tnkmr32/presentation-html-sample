@@ -67,13 +67,13 @@ body {
 
 .slide--title h1 {
   margin: 0;
-  font-size: clamp(2.2rem, 5.5vw, 4.5rem);
+  font-size: clamp(2.6rem, 6.6vw, 5.4rem);
   line-height: 1.25;
 }
 
 .slide--title .subtitle {
   margin: 1.2em 0 0;
-  font-size: clamp(1rem, 2vw, 1.6rem);
+  font-size: clamp(1.2rem, 2.4vw, 1.9rem);
   color: var(--ink-soft);
 }
 
@@ -82,14 +82,14 @@ body {
   bottom: 6vw;
   display: flex;
   gap: 1.5em;
-  font-size: clamp(0.8rem, 1.1vw, 1rem);
+  font-size: clamp(0.95rem, 1.35vw, 1.2rem);
   color: var(--ink-soft);
 }
 
 /* ---------- table of contents pattern ---------- */
 .slide--toc h1 {
   margin: 0 0 0.6em;
-  font-size: clamp(1.8rem, 3.6vw, 3rem);
+  font-size: clamp(2.1rem, 4.3vw, 3.6rem);
 }
 
 .slide--toc ol {
@@ -97,7 +97,7 @@ body {
   counter-reset: toc;
   margin: 0;
   padding: 0;
-  font-size: clamp(1.15rem, 2.2vw, 2rem);
+  font-size: clamp(1.35rem, 2.6vw, 2.4rem);
 }
 
 .slide--toc li {
@@ -111,6 +111,7 @@ body {
 .slide--toc li::before {
   content: counter(toc, decimal-leading-zero);
   font-weight: 700;
+  font-family: var(--font-mono);
   font-size: 0.65em;
   color: var(--ink);
   min-width: 1.6em;
@@ -123,14 +124,14 @@ body {
 
 .slide--content h1 {
   margin: 0 0 0.6em;
-  font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+  font-size: clamp(1.9rem, 3.8vw, 3.1rem);
 }
 
 .slide--content .body {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  font-size: clamp(1rem, 1.5vw, 1.35rem);
+  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
   line-height: 1.7;
 }
 
@@ -143,10 +144,20 @@ body {
   padding-left: 1.3em;
 }
 
+/* 項番は等幅フォントにして、桁数が変わっても位置を揃える。
+   等幅の数字は幅が広く、1.3em の字下げでは左端で切れるため ol だけ広げる。 */
+.slide--content .body ol {
+  padding-left: 2em;
+}
+
+.slide--content .body ol > li::marker {
+  font-family: var(--font-mono);
+}
+
 .slide--content .body img {
   display: block;
   max-width: 100%;
-  max-height: 42vh;
+  max-height: 35vh;
   margin: 0.8em auto;
   border-radius: 10px;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
@@ -231,7 +242,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.8em;
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: var(--ink-soft);
   z-index: 10;
   user-select: none;
