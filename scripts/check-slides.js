@@ -114,8 +114,8 @@ function checkCss() {
     if (ratio < 4.5) report("error", "F-1.4.3", target, `コントラスト比 ${ratio.toFixed(2)}:1 < 4.5:1`);
   }
 
-  // タイトルスライドはグラデーション背景のため、暗い側(--accent-soft)でも検査する。
-  const softBg = resolve("var(--accent-soft)");
+  // タイトルスライドはグラデーション背景のため、暗い側(--surface)でも検査する。
+  const softBg = resolve("var(--surface)");
   const inkSoft = resolve("var(--ink-soft)");
   if (softBg && inkSoft) {
     const ratio = contrastRatio(inkSoft, softBg);
