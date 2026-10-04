@@ -30,6 +30,35 @@ const LIMITS = {
 const IMG_MAX = { width: 1100, height: 252 };
 const MIN_EFFECTIVE_FONT_PX = 16;
 
+// スライドで使ってよい絵文字と意味。.claude/rules/slide-authoring.md「絵文字」の一覧と一致させる。
+// ⚠️ など U+FE0F 付きのものは、U+FE0F がないとモノクロの記号で表示されるため U+FE0F まで含めて書く。
+const EMOJI = {
+  "✅": "できる・完了・合格",
+  "❌": "できない・不可・不合格",
+  "⚠️": "注意・リスク",
+  "❓": "未定・要確認",
+  "💡": "ヒント・提案",
+  "📌": "要点・結論",
+  "🗓️": "日付・日程",
+  "⏱️": "時間・所要時間",
+  "📍": "場所・目的地",
+  "💰": "費用・金額",
+  "👤": "担当者・人",
+  "📊": "データ・数値",
+  "🎯": "目的・目標",
+  "🚃": "交通・移動",
+  "🍴": "食事",
+  "🏨": "宿泊",
+  "♨️": "温泉",
+};
+// 絵文字として表示される文字: 絵文字表示が既定の文字、または U+FE0F 付きの絵文字。
+const EMOJI_RE = /\p{Extended_Pictographic}\uFE0F|\p{Emoji_Presentation}/gu;
+// 一覧の絵文字のうち U+FE0F が必要なものを、U+FE0F なしで書いた箇所。
+const EMOJI_MISSING_VS_RE = new RegExp(
+  `(${Object.keys(EMOJI).filter((e) => e.endsWith("\uFE0F")).map((e) => e.slice(0, -1)).join("|")})(?!\uFE0F)`,
+  "gu"
+);
+
 // ---------- color utilities ----------
 
 const NAMED_COLORS = { white: "#ffffff", black: "#000000", transparent: null, none: null };
@@ -195,6 +224,9 @@ function checkHtml(product) {
       if (cols > LIMITS.tableCols) report("warning", "F-DENSITY", no, `表の列が ${cols} 列(目安 ${LIMITS.tableCols} 列以内)`);
     }
 
+    // 目次は見出しの再掲のため、見出しの検査と重複しないよう除く。
+    if (!/slide--toc/.test(slide)) checkEmojiHtml(slide, no);
+
     if (/slide--content/.test(slide)) {
       const body = (slide.match(/<div class="body">([\s\S]*)<\/div>/) || [])[1] || "";
       const bullets = (body.match(/<li\b/g) || []).length;
@@ -222,6 +254,49 @@ function checkHtml(product) {
   // 点滅・自動再生するメディアは使わない(F-2.2.2 / F-2.3.1)。
   if (/<(video|audio)\b[^>]*autoplay/i.test(html) || /<marquee|<blink/i.test(html)) {
     report("error", "F-2.2.2", label, "自動再生・点滅する要素がある");
+  }
+}
+
+// ---------- emoji ----------
+
+function decodeEntities(text) {
+  return text.replace(/&(amp|lt|gt|quot|#39);/g, (m, e) => ({ amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'" })[e]);
+}
+
+// 絵文字は一覧のものだけを、文字と併記して使う。見出しには使わない(F-EMOJI)。
+function checkEmojiHtml(slide, no) {
+  const html = slide.replace(/<(pre|code)\b[\s\S]*?<\/\1>/g, "");
+
+  const headingRe = /<h[1-6]\b[^>]*>[\s\S]*?<\/h[1-6]>|<p class="subtitle">[\s\S]*?<\/p>/g;
+  for (const [heading] of html.matchAll(headingRe)) {
+    if (heading.match(EMOJI_RE)) report("error", "F-EMOJI", no, `見出し・タイトルに絵文字がある: "${decodeEntities(heading.replace(/<[^>]+>/g, "")).trim()}"`);
+  }
+
+  // 箇条書きの項目・表のセル・段落ごとに区切って判定する(入れ子のリストは別の項目として扱う)。
+  const items = html
+    .replace(headingRe, "\n")
+    .replace(/<\/?(li|td|th|p|ul|ol|tr|div|br|section|header|blockquote)\b[^>]*>/g, "\n")
+    .replace(/<[^>]+>/g, "")
+    .split("\n")
+    .map((t) => decodeEntities(t).trim())
+    .filter(Boolean);
+
+  for (const item of items) {
+    for (const [, base] of item.matchAll(EMOJI_MISSING_VS_RE)) {
+      report("error", "F-EMOJI", no, `"${base}" に U+FE0F がない(モノクロ表示になる)。"${base}\uFE0F" と書く: "${item}"`);
+    }
+    const emojis = item.match(EMOJI_RE) || [];
+    if (!emojis.length) continue;
+    for (const e of emojis) {
+      // 一覧にない絵文字は作成中に追加してよい。合否は決めず、検証の確認事項に回す。
+      if (!(e in EMOJI) && !(e.replace("\uFE0F", "") in EMOJI)) {
+        report("warning", "F-EMOJI", no, `一覧にない絵文字 "${e}"(作成レポートに記録し、検証の確認事項に挙げる): "${item}"`);
+      }
+    }
+    if (!item.replace(EMOJI_RE, "").replace(/[\s\p{P}\p{S}]/gu, "")) {
+      report("error", "F-EMOJI", no, `絵文字だけで文字が併記されていない: "${item}"`);
+    }
+    if (emojis.length > 1) report("warning", "F-EMOJI", no, `1項目に絵文字が ${emojis.length} 個(目安 1 個まで): "${item}"`);
   }
 }
 
@@ -264,6 +339,9 @@ function checkSvgs(product) {
         report("error", "F-1.4.3", `${target} <text fill=${fill}> on ${bg}`, `コントラスト比 ${ratio.toFixed(2)}:1 < ${min}:1(実効 ${size.toFixed(1)}px)`);
       }
     }
+    const svgText = (svg.match(/<(text|title|desc)\b[\s\S]*?<\/\1>/g) || []).join(" ");
+    const svgEmojis = [...new Set(svgText.match(EMOJI_RE) || [])];
+    if (svgEmojis.length) report("error", "F-EMOJI", target, `SVG の中に絵文字がある(${svgEmojis.join(" ")})。文字のラベルにする`);
     if (minSize < MIN_EFFECTIVE_FONT_PX) {
       report(
         "error",
