@@ -260,6 +260,12 @@ body {
   user-select: none;
 }
 
+/* ---------- links ---------- */
+/* リンク(引用番号・参考文献)は文字用アクセントの青にそろえる。下線でリンクと分かるようにする。 */
+.slide a {
+  color: var(--accent-strong);
+}
+
 /* ---------- print / PDF export ---------- */
 /* 1スライド = 1ページ(16:9)。ブラウザの「PDFに保存」と npm run pdf の両方で使う。 */
 @page {

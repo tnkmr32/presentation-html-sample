@@ -56,6 +56,8 @@ console.log("Hello, presentation!");
 | アクセント | <span class="swatch" style="background: var(--accent)"></span>`#00B5C8` | 図形・グラフの主系列 | 2.28:1(文字には使わない) |
 | アクセント(文字用) | <span class="swatch" style="background: var(--accent-strong)"></span>`#3335E3` | **強調文字**・細線 | 6.98:1 |
 
+<small>コントラスト比の基準(文字 4.5:1、図形 3:1)の出典: WCAG 2.2 日本語訳 [[1]](#ref-1)</small>
+
 ---
 
 ## カラーパレット: 背景色と文字色(モノトーン)
@@ -68,3 +70,9 @@ console.log("Hello, presentation!");
 | 面 | <span class="swatch" style="background: var(--surface)"></span>`#EBEBEB` | 表の縞・インラインコード・タイトルの背景 | — |
 | 罫線 | <span class="swatch" style="background: var(--line)"></span>`#D6D6D6` | 罫線・区切り線 | — |
 | 外側の背景 | <span class="swatch" style="background: var(--stage)"></span>`#111111` | スライドの外側 | — |
+
+---
+
+## 参考文献
+
+1. <span id="ref-1"></span>[Web Content Accessibility Guidelines (WCAG) 2.2 日本語訳(WAIC)](https://waic.jp/translations/WCAG22/)(2026年10月取得)
