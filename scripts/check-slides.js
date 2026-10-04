@@ -8,6 +8,7 @@
 //   node scripts/check-slides.js contrast <前景色> <背景色>   コントラスト比を計算する
 //
 // error が1件でもあれば終了コード 1 を返す。warning は人(検証エージェント)が判断する。
+// info は判定の材料(図のある本文スライドの数など)で、合否には使わない。
 
 const fs = require("fs");
 const path = require("path");
@@ -29,6 +30,9 @@ const LIMITS = {
 // 値の根拠は .claude/rules/slide-authoring.md「画像」を参照。テンプレートを変えたら更新する。
 const IMG_MAX = { width: 1100, height: 252 };
 const MIN_EFFECTIVE_FONT_PX = 16;
+
+// 図のある本文スライドの割合の目安(F-VISUAL)。.claude/rules/slide-authoring.md「視覚化」を参照。
+const MIN_VISUAL_RATIO = 0.5;
 
 // スライドで使ってよい絵文字と意味。.claude/rules/slide-authoring.md「絵文字」の一覧と一致させる。
 // ⚠️ など U+FE0F 付きのものは、U+FE0F がないとモノクロの記号で表示されるため U+FE0F まで含めて書く。
@@ -193,6 +197,9 @@ function checkHtml(product) {
   const slides = html.match(/<section class="slide[\s\S]*?<\/section>/g) || [];
   if (slides.length === 0) report("error", "BUILD", label, "スライドが1枚もない");
 
+  const withoutFigure = [];
+  let contentSlides = 0;
+
   slides.forEach((slide, i) => {
     const no = `slide ${i + 1}`;
     const h1 = (slide.match(/<h1>([\s\S]*?)<\/h1>/) || [])[1];
@@ -233,8 +240,22 @@ function checkHtml(product) {
       if (bullets > LIMITS.bulletsPerSlide) report("warning", "F-DENSITY", no, `箇条書きが ${bullets} 項目(目安 ${LIMITS.bulletsPerSlide} 項目以内)`);
       const chars = stripTags(body.replace(/<table[\s\S]*?<\/table>/g, "")).length;
       if (chars > LIMITS.charsPerSlide) report("warning", "F-DENSITY", no, `本文が ${chars} 文字(目安 ${LIMITS.charsPerSlide} 文字以内)`);
+
+      // 参考文献スライド(id="ref-n" を持つ)は視覚化の対象外。
+      if (!/\sid="ref-\d+"/.test(body)) {
+        contentSlides++;
+        if (!/<img\b/.test(body)) withoutFigure.push(i + 1);
+      }
     }
   });
+
+  // 図のある本文スライドの割合(F-VISUAL)。扉・目次・参考文献スライドは数えない。
+  if (contentSlides > 0) {
+    const withFigure = contentSlides - withoutFigure.length;
+    const level = withFigure / contentSlides < MIN_VISUAL_RATIO ? "warning" : "info";
+    const missing = withoutFigure.length ? `。図のないスライド: ${withoutFigure.join(", ")}` : "";
+    report(level, "F-VISUAL", label, `図のある本文スライド ${withFigure} / ${contentSlides} 枚(目安 半数以上)${missing}`);
+  }
 
   // 引用番号リンク [n](#ref-n): リンク先の id があり、参考文献リストの番号と id が一致すること(F-SOURCE)。
   const ids = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
@@ -360,7 +381,8 @@ function printMarkdown() {
   const warnings = results.filter((r) => r.level === "warning");
   console.log(`# check-slides 結果\n`);
   console.log(`- error: ${errors.length}`);
-  console.log(`- warning: ${warnings.length}\n`);
+  console.log(`- warning: ${warnings.length}`);
+  console.log(`- info: ${results.length - errors.length - warnings.length}\n`);
   if (results.length) {
     console.log("| level | 基準 | 対象 | 内容 |");
     console.log("| --- | --- | --- | --- |");

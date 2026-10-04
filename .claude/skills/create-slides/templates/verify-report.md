@@ -44,6 +44,7 @@
 | F-SOURCE | 必須 | | |
 | F-TEXT | 必須 | | |
 | F-LEGIBLE | 必須 | | |
+| F-VISUAL | 必須 | | <図のある本文スライド X / Y 枚。図のないスライドとその理由の妥当性> |
 | F-CHART | 必須 | | |
 | F-EMOJI | 必須 | | |
 | F-IMAGE | 推奨 | | |
