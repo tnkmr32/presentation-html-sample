@@ -1,9 +1,9 @@
 #!/bin/bash
-# Claude Code のセッションを iTerm2 の新しいタブで開く。
+# Claude Code のセッションをターミナルの新しいタブで開く(macOS は iTerm2、Windows は Windows Terminal)。
 # 使い方: claude-tab              実行中のセッションを一覧から選ぶ
 #         claude-tab <セッションID>  指定したセッションを開く
 
-open_tab="$(cd "$(dirname "$0")/../hooks" && pwd)/open-iterm-tab.sh"
+open_tab="$(cd "$(dirname "$0")/../hooks" && pwd)/open-session-tab.sh"
 
 if [ -n "$1" ]; then
   exec "$open_tab" "$1"
