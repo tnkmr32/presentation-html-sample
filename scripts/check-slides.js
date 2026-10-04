@@ -24,6 +24,12 @@ const LIMITS = {
   tableCols: 5,
 };
 
+// 本文中の画像の表示上限(1280×720 での px)。src/style.css の .slide--content .body img
+// (max-width: 100% = 本文幅 約1100px、max-height: 35vh = 252px)に合わせる。
+// 値の根拠は .claude/rules/slide-authoring.md「画像」を参照。テンプレートを変えたら更新する。
+const IMG_MAX = { width: 1100, height: 252 };
+const MIN_EFFECTIVE_FONT_PX = 16;
+
 // ---------- color utilities ----------
 
 const NAMED_COLORS = { white: "#ffffff", black: "#000000", transparent: null, none: null };
@@ -216,24 +222,40 @@ function checkSvgs(product) {
     if (/<animate|<set\b|@keyframes/i.test(svg)) report("warning", "F-2.3.1", target, "アニメーションを含む。点滅(1秒に3回超)がないか目視確認すること");
 
     // 背景: 全面を覆う rect(width が 100% か viewBox の幅と一致)の fill。なければ白(スライドの紙色)。
-    const viewBoxWidth = ((svg.match(/viewBox="[\d.\s-]+?\s([\d.]+)\s[\d.]+"/) || [])[1]) || null;
+    const viewBox = (svg.match(/viewBox="[\d.-]+\s+[\d.-]+\s+([\d.]+)\s+([\d.]+)"/) || []).slice(1);
+    const viewBoxWidth = viewBox[0] || null;
     const bgRect = (svg.match(/<rect\b[^>]*>/g) || []).find((r) => {
       const w = attr(r, "width");
       return w === "100%" || (viewBoxWidth && w === viewBoxWidth);
     });
     const bg = parseColor(bgRect && attr(bgRect, "fill")) || "#ffffff";
 
+    // 表示倍率: テンプレートの表示上限に収めるための縮小率。文字の大きさは倍率を掛けた実効サイズで判定する。
+    const scale = viewBox.length
+      ? Math.min(1, IMG_MAX.width / parseFloat(viewBox[0]), IMG_MAX.height / parseFloat(viewBox[1]))
+      : 1;
+    let minSize = Infinity;
+
     for (const text of svg.match(/<text\b[^>]*>/g) || []) {
       const style = attr(text, "style") || "";
       const fill = parseColor(attr(text, "fill") || (style.match(/fill:\s*([^;]+)/) || [])[1]) || "#000000";
-      const size = parseFloat(attr(text, "font-size") || (style.match(/font-size:\s*([\d.]+)/) || [])[1] || "16");
+      const size = parseFloat(attr(text, "font-size") || (style.match(/font-size:\s*([\d.]+)/) || [])[1] || "16") * scale;
+      minSize = Math.min(minSize, size);
       const bold = /bold|[6-9]00/.test(attr(text, "font-weight") || style);
       const large = size >= 24 || (bold && size >= 18.66);
       const min = large ? 3 : 4.5;
       const ratio = contrastRatio(fill, bg);
       if (ratio < min) {
-        report("error", "F-1.4.3", `${target} <text fill=${fill}> on ${bg}`, `コントラスト比 ${ratio.toFixed(2)}:1 < ${min}:1`);
+        report("error", "F-1.4.3", `${target} <text fill=${fill}> on ${bg}`, `コントラスト比 ${ratio.toFixed(2)}:1 < ${min}:1(実効 ${size.toFixed(1)}px)`);
       }
+    }
+    if (minSize < MIN_EFFECTIVE_FONT_PX) {
+      report(
+        "error",
+        "F-LEGIBLE",
+        target,
+        `最小の文字が実効 ${minSize.toFixed(1)}px < ${MIN_EFFECTIVE_FONT_PX}px(viewBox ${viewBox.join("×")}、表示倍率 ${scale.toFixed(2)})`
+      );
     }
   }
 }
