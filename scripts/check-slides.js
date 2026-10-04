@@ -288,7 +288,10 @@ function checkEmojiHtml(slide, no) {
     const emojis = item.match(EMOJI_RE) || [];
     if (!emojis.length) continue;
     for (const e of emojis) {
-      if (!(e in EMOJI) && !(e.replace("️", "") in EMOJI)) report("error", "F-EMOJI", no, `一覧にない絵文字 "${e}": "${item}"`);
+      // 一覧にない絵文字は作成中に追加してよい。合否は決めず、検証の確認事項に回す。
+      if (!(e in EMOJI) && !(e.replace("\uFE0F", "") in EMOJI)) {
+        report("warning", "F-EMOJI", no, `一覧にない絵文字 "${e}"(作成レポートに記録し、検証の確認事項に挙げる): "${item}"`);
+      }
     }
     if (!item.replace(EMOJI_RE, "").replace(/[\s\p{P}\p{S}]/gu, "")) {
       report("error", "F-EMOJI", no, `絵文字だけで文字が併記されていない: "${item}"`);
