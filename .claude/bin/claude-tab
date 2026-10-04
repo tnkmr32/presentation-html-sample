@@ -1,0 +1,28 @@
+#!/bin/bash
+# Claude Code のセッションを iTerm2 の新しいタブで開く。
+# 使い方: claude-tab              実行中のセッションを一覧から選ぶ
+#         claude-tab <セッションID>  指定したセッションを開く
+
+open_tab="$(cd "$(dirname "$0")/../hooks" && pwd)/open-iterm-tab.sh"
+
+if [ -n "$1" ]; then
+  exec "$open_tab" "$1"
+fi
+
+sessions=$(claude agents --json | jq -r '.[] | [.sessionId, (.name // .sessionId), .status, .cwd] | @tsv')
+if [ -z "$sessions" ]; then
+  echo "実行中のセッションがありません" >&2
+  exit 1
+fi
+
+ids=(); labels=()
+while IFS=$'\t' read -r id name status cwd; do
+  ids+=("$id")
+  labels+=("$name [$status] $(basename "$cwd")")
+done <<< "$sessions"
+
+PS3="開くセッションの番号: "
+select label in "${labels[@]}"; do
+  [ -n "$label" ] && exec "$open_tab" "${ids[$((REPLY - 1))]}"
+  echo "1〜${#ids[@]} の番号を入力してください"
+done
