@@ -204,6 +204,21 @@ function checkHtml(product) {
     }
   });
 
+  // 引用番号リンク [n](#ref-n): リンク先の id があり、参考文献リストの番号と id が一致すること(F-SOURCE)。
+  const ids = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
+  for (const [, href] of html.matchAll(/<a\b[^>]*\shref="#([^"]+)"/g)) {
+    if (!/^\d+$/.test(href) && !ids.has(href)) report("error", "F-SOURCE", `#${href}`, "ページ内リンクの参照先 id がない");
+  }
+  for (const [, olTag, items] of html.matchAll(/(<ol\b[^>]*>)([\s\S]*?)<\/ol>/g)) {
+    const start = parseInt(attr(olTag, "start") || "1", 10);
+    (items.match(/<li\b[\s\S]*?<\/li>/g) || []).forEach((li, i) => {
+      const ref = (li.match(/\sid="ref-(\d+)"/) || [])[1];
+      if (ref && Number(ref) !== start + i) {
+        report("error", "F-SOURCE", `#ref-${ref}`, `参考文献リストの番号 ${start + i} と id が一致しない`);
+      }
+    });
+  }
+
   // 点滅・自動再生するメディアは使わない(F-2.2.2 / F-2.3.1)。
   if (/<(video|audio)\b[^>]*autoplay/i.test(html) || /<marquee|<blink/i.test(html)) {
     report("error", "F-2.2.2", label, "自動再生・点滅する要素がある");

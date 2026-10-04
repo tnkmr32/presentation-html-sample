@@ -44,6 +44,17 @@
 
   if (total) total.textContent = slides.length;
 
-  var initial = parseInt((location.hash || "").replace("#", ""), 10);
-  show(isNaN(initial) ? 0 : initial - 1);
+  // URL の # は、数字ならスライド番号、それ以外なら要素の id として扱う
+  // (引用番号リンク [1](#ref-1) で参考文献スライドへ移動する)。
+  function showHash() {
+    var hash = decodeURIComponent((location.hash || "").replace("#", ""));
+    var n = parseInt(hash, 10);
+    if (String(n) === hash) return show(n - 1);
+    var target = hash && document.getElementById(hash);
+    var slide = target && target.closest(".slide");
+    show(slide ? slides.indexOf(slide) : index);
+  }
+
+  window.addEventListener("hashchange", showHash);
+  showHash();
 })();
