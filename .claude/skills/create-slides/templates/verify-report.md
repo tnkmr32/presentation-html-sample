@@ -43,6 +43,7 @@
 | F-DATA | 必須 | | |
 | F-SOURCE | 必須 | | |
 | F-TEXT | 必須 | | |
+| F-LEGIBLE | 必須 | | |
 | F-CHART | 必須 | | |
 | F-IMAGE | 推奨 | | |
 
