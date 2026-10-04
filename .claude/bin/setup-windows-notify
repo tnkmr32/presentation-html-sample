@@ -1,0 +1,30 @@
+#!/bin/bash
+# Windows で、Claude Code の通知(.claude/hooks/notify.sh)をクリックしたときに
+# Windows Terminal の該当タブへ移動できるよう、claude-focus: プロトコルを登録する(HKCU のみ)。
+# WSL・Git Bash のどちらからでも実行できる。リポジトリを移動したら再実行する。
+# 使い方: setup-windows-notify            登録する
+#         setup-windows-notify --remove   登録を削除する
+
+script="$(cd "$(dirname "$0")/../hooks" && pwd)/focus-windows-terminal.ps1"
+if command -v wslpath >/dev/null 2>&1; then
+  script=$(wslpath -w "$script")
+elif command -v cygpath >/dev/null 2>&1; then
+  script=$(cygpath -w "$script")
+fi
+
+if [ "$1" = "--remove" ]; then
+  ps="Remove-Item -Recurse -Force 'HKCU:\\Software\\Classes\\claude-focus' -ErrorAction SilentlyContinue"
+else
+  # conhost --headless で、クリックしたときに PowerShell のウィンドウが一瞬表示されないようにする
+  command="conhost.exe --headless powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File \"$script\" \"%1\""
+  command=${command//\'/\'\'}
+  ps="\$key = 'HKCU:\\Software\\Classes\\claude-focus'
+New-Item -Force -Path \"\$key\\shell\\open\\command\" | Out-Null
+Set-ItemProperty -Path \$key -Name '(default)' -Value 'URL:Claude Code focus'
+Set-ItemProperty -Path \$key -Name 'URL Protocol' -Value ''
+Set-ItemProperty -Path \"\$key\\shell\\open\\command\" -Name '(default)' -Value '$command'
+(Get-ItemProperty \"\$key\\shell\\open\\command\").'(default)'"
+fi
+
+powershell.exe -NoProfile -NonInteractive -EncodedCommand \
+  "$(printf '%s' "$ps" | iconv -f UTF-8 -t UTF-16LE | base64 | tr -d '\r\n')" 2>/dev/null | tr -d '\r'
