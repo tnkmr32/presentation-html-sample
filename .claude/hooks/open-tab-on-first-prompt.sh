@@ -31,5 +31,6 @@ mkdir "$marker_dir/$session_id.lock" 2>/dev/null || exit 0
 [ -e "$marker_dir/$session_id" ] && exit 0
 touch "$marker_dir/$session_id"
 
-"$(dirname "$0")/open-iterm-tab.sh" "$session_id" >/dev/null 2>&1
+cwd=$(printf '%s' "$input" | jq -r '.cwd // empty' 2>/dev/null)
+"$(dirname "$0")/open-iterm-tab.sh" "$session_id" "$cwd" >/dev/null 2>&1
 exit 0
