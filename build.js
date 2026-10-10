@@ -143,12 +143,21 @@ function renderSectionSlide(slide) {
     </section>`;
 }
 
+// 本文末尾の <small> だけの段落(出典などの注記)を本文から切り出す。
+// 注記はスライドの下端にそろえて表示する。
+const NOTES_RE = /(?:\s*<p><small>(?:(?!<\/p>)[\s\S])*<\/small><\/p>)+\s*$/;
+
 function renderContentSlide(slide) {
   if (slide.kind === "section") return renderSectionSlide(slide);
+  let body = marked.parse(slide.body || "");
+  const notesMatch = body.match(NOTES_RE);
+  const notes = notesMatch ? notesMatch[0].trim() : "";
+  if (notes) body = body.slice(0, notesMatch.index);
   return `
     <section class="slide slide--content">
       <header><h1>${escapeHtml(slide.title)}</h1></header>
-      <div class="body">${marked.parse(slide.body || "")}</div>
+      <div class="body">${body}</div>
+      ${notes ? `<footer class="notes">${notes}</footer>` : ""}
     </section>`;
 }
 

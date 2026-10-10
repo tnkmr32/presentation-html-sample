@@ -26,7 +26,7 @@ const LIMITS = {
 };
 
 // 本文中の画像の表示上限(1280×720 での px)。src/style.css の .slide--content .body img
-// (max-width: 100% = 本文幅 約1100px、max-height: 35vh = 252px)に合わせる。
+// (max-width: 100% = 本文幅 約1100px、max-height: 35cqh = 252px)に合わせる。
 // 値の根拠は .claude/rules/slide-authoring.md「画像」を参照。テンプレートを変えたら更新する。
 const IMG_MAX = { width: 1100, height: 252 };
 const MIN_EFFECTIVE_FONT_PX = 16;
@@ -235,7 +235,8 @@ function checkHtml(product) {
     if (!/slide--toc/.test(slide)) checkEmojiHtml(slide, no);
 
     if (/slide--content/.test(slide)) {
-      const body = (slide.match(/<div class="body">([\s\S]*)<\/div>/) || [])[1] || "";
+      // 下端の注記(<footer class="notes">)も本文の分量に含める。
+      const body = (slide.match(/<div class="body">([\s\S]*)<\/section>/) || [])[1] || "";
       const bullets = (body.match(/<li\b/g) || []).length;
       if (bullets > LIMITS.bulletsPerSlide) report("warning", "F-DENSITY", no, `箇条書きが ${bullets} 項目(目安 ${LIMITS.bulletsPerSlide} 項目以内)`);
       const chars = stripTags(body.replace(/<table[\s\S]*?<\/table>/g, "")).length;
