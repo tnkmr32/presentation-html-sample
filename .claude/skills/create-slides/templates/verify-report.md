@@ -39,6 +39,7 @@
 | テンプレート担保項目 | 必須 | | `src/`・`build.js`・`scripts/` の変更有無 |
 | F-BUILD | 必須 | | |
 | F-DENSITY | 必須 | | |
+| F-LIST | 必須 | | |
 | F-ONEMSG | 必須 | | |
 | F-DATA | 必須 | | |
 | F-SOURCE | 必須 | | |
