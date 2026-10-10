@@ -126,13 +126,40 @@ body {
 }
 
 /* ---------- section pattern ---------- */
+/* 左 30% をティールの太い帯にして大きな番号を載せ、扉スライドだと一目で分かるようにする。
+   番号(--ink)に対するコントラストは、帯のどの位置でも 6.4:1 以上
+   (--accent の 6.40:1 から、明るい終点 #7fdde8 の約 10:1 まで)。 */
 .slide--section {
+  flex-direction: row;
+  align-items: stretch;
+  padding: 0;
+}
+
+.slide--section.is-active {
+  display: flex;
+}
+
+.slide--section .section-band {
+  flex: none;
+  width: 30%;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  border-left: 0.6cqw solid var(--accent);
+  background: linear-gradient(160deg, var(--accent) 0%, #7fdde8 100%);
+}
+
+.slide--section .section-num {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: clamp(5rem, 13cqw, 11rem);
+  line-height: 1;
+  color: var(--ink);
 }
 
 .slide--section h1 {
+  align-self: center;
   margin: 0;
+  padding: 0 7cqw;
   font-size: clamp(2.3rem, 5cqw, 4.2rem);
   line-height: 1.3;
 }

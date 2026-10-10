@@ -91,6 +91,9 @@ function loadDeck(slidesFile) {
   });
 
   // セクションを使う場合、すべての本文スライドがいずれかのセクションに属するようにする。
+  // 扉スライドの番号(目次の項番と一致する)
+  let sectionNumber = 0;
+  for (const s of contentSlides) if (s.kind === "section") s.number = ++sectionNumber;
   if (contentSlides.some((s) => s.kind === "section") && contentSlides[0].kind !== "section") {
     throw new Error(`${label}: when using sections, the first slide after the title must be a "# セクション名" section`);
   }
@@ -139,6 +142,7 @@ function renderTocSlide(contentSlides) {
 function renderSectionSlide(slide) {
   return `
     <section class="slide slide--section">
+      <div class="section-band" aria-hidden="true"><span class="section-num">${String(slide.number).padStart(2, "0")}</span></div>
       <h1>${escapeHtml(slide.title)}</h1>
     </section>`;
 }
