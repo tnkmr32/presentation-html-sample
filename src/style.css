@@ -333,17 +333,29 @@ body {
     width: auto;
     height: auto;
     margin: 0;
+    counter-reset: page-no;
     /* 印刷時は枠の大きさを持たないため、cqw / cqh はページ(1280×720)基準になる。 */
     container-type: normal;
   }
 
   .slide {
-    position: static !important;
+    position: relative !important;
     display: flex !important;
+    counter-increment: page-no;
     width: 100vw;
     height: 100vh;
     page-break-after: always;
     break-after: page;
+  }
+
+  /* 画面の .deck-nav と同じ位置(右下)に「現在 / 総数」を出す。 */
+  .slide::after {
+    content: counter(page-no) " / " var(--total);
+    position: absolute;
+    bottom: 3cqw;
+    right: 4cqw;
+    font-size: 16px;
+    color: var(--ink-soft);
   }
 
   .slide:last-child {
