@@ -6,6 +6,8 @@
 #                                              /clear 後の最初のプロンプトでタブを開かないよう印を付ける
 
 input=$(cat)
+# iTerm2 を使うのは macOS だけ(Windows・Linux では何もしない)
+command -v osascript >/dev/null 2>&1 || exit 0
 session_id=$(printf '%s' "$input" | jq -r '.session_id // empty' 2>/dev/null)
 [ -z "$session_id" ] && exit 0
 
