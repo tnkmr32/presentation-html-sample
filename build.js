@@ -180,11 +180,12 @@ function copyDir(src, dest) {
 }
 
 function buildHtml(deck) {
-  const slidesHtml = [
+  const slides = [
     renderTitleSlide(deck),
     ...(deck.contentSlides.length ? [renderTocSlide(deck.contentSlides)] : []),
     ...deck.contentSlides.map(renderContentSlide),
-  ].join("\n");
+  ];
+  const slidesHtml = slides.join("\n");
 
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -198,7 +199,7 @@ function buildHtml(deck) {
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="deck">
+<div class="deck" style="--total: '${slides.length}'">
 ${slidesHtml}
 </div>
 <div class="deck-nav">
