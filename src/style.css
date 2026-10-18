@@ -127,8 +127,8 @@ body {
 
 /* ---------- section pattern ---------- */
 /* 左 30% をティールの太い帯にして大きな番号を載せ、扉スライドだと一目で分かるようにする。
-   番号(--ink)に対するコントラストは、帯のどの位置でも 6.4:1 以上
-   (--accent の 9.30:1 から、明るい終点 #99e3ec の約 11:1 まで)。 */
+   番号(--ink)に対するコントラストは
+   (単色の --accent 上で 9.30:1)。 */
 .slide--section {
   flex-direction: row;
   align-items: stretch;
@@ -145,7 +145,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, var(--accent) 0%, #99e3ec 100%);
+  background: var(--accent);
 }
 
 .slide--section .section-num {
