@@ -41,6 +41,7 @@
 | F-DENSITY | 必須 | | |
 | F-LIST | 必須 | | |
 | F-ONEMSG | 必須 | | |
+| F-PREP | 必須 | | |
 | F-DATA | 必須 | | |
 | F-SOURCE | 必須 | | |
 | F-TEXT | 必須 | | |

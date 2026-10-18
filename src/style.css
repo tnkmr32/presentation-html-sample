@@ -192,9 +192,10 @@ body {
 }
 
 /* 項番は等幅フォントにして、桁数が変わっても位置を揃える。
-   等幅の数字は幅が広く、1.3em の字下げでは左端で切れるため ol だけ広げる。 */
+   等幅の数字は幅が広く、1.3em の字下げでは左端で切れるため ol だけ広げる。
+   2桁の番号(10. 〜 99.)が左端で切れない幅にする。 */
 .slide--content .body ol {
-  padding-left: 2em;
+  padding-left: 2.6em;
 }
 
 .slide--content .body ol > li::marker {

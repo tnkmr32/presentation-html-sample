@@ -253,13 +253,15 @@ function checkHtml(product) {
     if (/slide--content/.test(slide)) {
       // 下端の注記(<footer class="notes">)も本文の分量に含める。
       const body = (slide.match(/<div class="body">([\s\S]*)<\/section>/) || [])[1] || "";
+      // 参考文献スライド(id="ref-n" を持つ)は項目数・文字数の目安の対象外(収まりは pdf のはみ出し警告で見る)。
+      const isRefSlide = /\sid="ref-\d+"/.test(body);
       const bullets = (body.match(/<li\b/g) || []).length;
-      if (bullets > LIMITS.bulletsPerSlide) report("warning", "F-DENSITY", no, `箇条書きが ${bullets} 項目(目安 ${LIMITS.bulletsPerSlide} 項目以内)`);
+      if (!isRefSlide && bullets > LIMITS.bulletsPerSlide) report("warning", "F-DENSITY", no, `箇条書きが ${bullets} 項目(目安 ${LIMITS.bulletsPerSlide} 項目以内)`);
       // 「項目: 説明」形式の箇条書きが2項目以上ある(F-LIST)。
       const labeled = (body.match(/<li\b[\s\S]*?<\/li>/g) || []).filter((li) => /^[^:：。、]{1,12}[:：]\s*\S/.test(stripTags(li)));
       if (labeled.length >= 2) report("warning", "F-LIST", no, `「項目: 説明」形式の箇条書きが ${labeled.length} 項目ある。項目と内容の2列の表にする`);
       const chars = stripTags(body.replace(/<table[\s\S]*?<\/table>/g, "")).length;
-      if (chars > LIMITS.charsPerSlide) report("warning", "F-DENSITY", no, `本文が ${chars} 文字(目安 ${LIMITS.charsPerSlide} 文字以内)`);
+      if (!isRefSlide && chars > LIMITS.charsPerSlide) report("warning", "F-DENSITY", no, `本文が ${chars} 文字(目安 ${LIMITS.charsPerSlide} 文字以内)`);
 
       // 参考文献スライド(id="ref-n" を持つ)は視覚化の対象外。
       if (!/\sid="ref-\d+"/.test(body)) {
