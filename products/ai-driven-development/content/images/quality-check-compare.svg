@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 200" role="img" font-family="sans-serif">
+<title>チェックなしでは完了に見えた後に人がすべて確認する。チェックありではテストで不合格が自動修正され、合格で完了する</title>
+<defs><marker id="ar" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><polygon points="0,0 12,6 0,12" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="1100" height="200" fill="#f5f5f5"/>
+<rect x="20" y="20" width="150" height="70" rx="8" fill="#f5f5f5" stroke="#222222" stroke-width="3"/>
+<text x="95" y="62" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">チェックなし</text>
+<rect x="195" y="20" width="195" height="70" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="292.5" y="62" text-anchor="middle" font-size="18" fill="#222222">AIが作業</text>
+<line x1="392" y1="55" x2="426" y2="55" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<rect x="426" y="20" width="195" height="70" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="523.5" y="62" text-anchor="middle" font-size="18" fill="#222222">完了に見える</text>
+<line x1="623" y1="55" x2="657" y2="55" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<rect x="657" y="20" width="195" height="70" rx="8" fill="#ebebeb" stroke="#222222" stroke-width="4"/>
+<text x="754.5" y="62" text-anchor="middle" font-size="18" fill="#222222">人がすべて確認</text>
+<line x1="172" y1="55" x2="191" y2="55" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<rect x="20" y="115" width="150" height="70" rx="8" fill="#f5f5f5" stroke="#222222" stroke-width="3"/>
+<text x="95" y="157" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">チェックあり</text>
+<rect x="195" y="115" width="195" height="70" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="292.5" y="157" text-anchor="middle" font-size="18" fill="#222222">AIが作業</text>
+<line x1="392" y1="150" x2="426" y2="150" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<rect x="426" y="115" width="195" height="70" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="2"/>
+<text x="523.5" y="157" text-anchor="middle" font-size="18" fill="#222222">テスト・ビルド実行</text>
+<line x1="623" y1="150" x2="657" y2="150" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<rect x="657" y="115" width="195" height="70" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="2"/>
+<text x="754.5" y="157" text-anchor="middle" font-size="18" fill="#222222">不合格は自動で修正</text>
+<line x1="854" y1="150" x2="888" y2="150" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<rect x="888" y="115" width="195" height="70" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="2"/>
+<text x="985.5" y="157" text-anchor="middle" font-size="18" fill="#222222">合格で完了</text>
+<line x1="172" y1="150" x2="191" y2="150" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+</svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 200" role="img" font-family="sans-serif">
+<title>実装する主体は従来が人、AI駆動がAIエージェント。人の主な作業は従来がコードを書くこと、AI駆動が目的を伝えて結果を確かめること。品質の確かめ方は従来が人のレビューとテスト、AI駆動が自動チェックと人の確認</title>
+<defs><marker id="ar" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><polygon points="0,0 12,6 0,12" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="1100" height="200" fill="#f5f5f5"/>
+<rect x="20" y="4" width="230" height="40" rx="8" fill="#f5f5f5" stroke="#5c5c5c" stroke-width="2"/>
+<text x="135.0" y="31" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">項目</text>
+<rect x="260" y="4" width="390" height="40" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="455.0" y="31" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">従来開発</text>
+<rect x="660" y="4" width="420" height="40" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="870.0" y="31" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">AI駆動開発</text>
+<rect x="20" y="52" width="230" height="40" rx="8" fill="#f5f5f5" stroke="#5c5c5c" stroke-width="2"/>
+<text x="135.0" y="79" text-anchor="middle" font-size="18" fill="#222222">実装する主体</text>
+<rect x="260" y="52" width="390" height="40" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="455.0" y="79" text-anchor="middle" font-size="18" fill="#222222">人</text>
+<rect x="660" y="52" width="420" height="40" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="870.0" y="79" text-anchor="middle" font-size="18" fill="#222222">AIエージェント</text>
+<rect x="20" y="100" width="230" height="40" rx="8" fill="#f5f5f5" stroke="#5c5c5c" stroke-width="2"/>
+<text x="135.0" y="127" text-anchor="middle" font-size="18" fill="#222222">人の主な作業</text>
+<rect x="260" y="100" width="390" height="40" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="455.0" y="127" text-anchor="middle" font-size="18" fill="#222222">コードを書く</text>
+<rect x="660" y="100" width="420" height="40" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="870.0" y="127" text-anchor="middle" font-size="18" fill="#222222">目的を伝え、結果を確かめる</text>
+<rect x="20" y="148" width="230" height="40" rx="8" fill="#f5f5f5" stroke="#5c5c5c" stroke-width="2"/>
+<text x="135.0" y="175" text-anchor="middle" font-size="18" fill="#222222">品質の確かめ方</text>
+<rect x="260" y="148" width="390" height="40" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="455.0" y="175" text-anchor="middle" font-size="18" fill="#222222">人のレビュー・テスト</text>
+<rect x="660" y="148" width="420" height="40" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="870.0" y="175" text-anchor="middle" font-size="18" fill="#222222">自動チェックと人の確認</text>
+</svg>

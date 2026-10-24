@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 200" role="img" font-family="sans-serif">
+<title>探索・計画・実装・検証の順に進み、合格でコミット、不合格なら修正して実装に戻る</title>
+<defs><marker id="ar" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><polygon points="0,0 12,6 0,12" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="1100" height="200" fill="#f5f5f5"/>
+<rect x="20" y="40" width="110" height="50" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="75" y="71" text-anchor="middle" font-size="18" fill="#222222">探索</text>
+<rect x="170" y="40" width="110" height="50" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="225" y="71" text-anchor="middle" font-size="18" fill="#222222">計画</text>
+<rect x="320" y="40" width="110" height="50" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="375" y="71" text-anchor="middle" font-size="18" fill="#222222">実装</text>
+<rect x="470" y="40" width="110" height="50" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="525" y="71" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">検証</text>
+<line x1="132" y1="65" x2="168" y2="65" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<line x1="282" y1="65" x2="318" y2="65" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<line x1="432" y1="65" x2="468" y2="65" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<line x1="582" y1="65" x2="616" y2="65" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<polygon points="685,15 755,65 685,115 615,65" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="685" y="71" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">合格?</text>
+<line x1="758" y1="65" x2="806" y2="65" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<text x="782" y="52" text-anchor="middle" font-size="18" fill="#222222">はい</text>
+<rect x="810" y="40" width="130" height="50" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="875" y="71" text-anchor="middle" font-size="18" fill="#222222">コミット</text>
+<polyline points="685,118 685,162 600,162" fill="none" stroke="#222222" stroke-width="3"/>
+<text x="700" y="146" text-anchor="start" font-size="18" fill="#222222">いいえ</text>
+<rect x="480" y="140" width="120" height="44" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="540" y="168" text-anchor="middle" font-size="18" fill="#222222">修正</text>
+<polyline points="480,162 375,162 375,94" fill="none" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+</svg>

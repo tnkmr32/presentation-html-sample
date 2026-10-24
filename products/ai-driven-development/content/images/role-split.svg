@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 200" role="img" font-family="sans-serif">
+<title>人は目的を伝え、計画を承認し、証拠を見て合否を判断する。AIは仕様化、計画案、実装と検証、証拠の提示を担う</title>
+<defs><marker id="ar" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><polygon points="0,0 12,6 0,12" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="1100" height="200" fill="#f5f5f5"/>
+<text x="220" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">目的</text>
+<rect x="100" y="48" width="240" height="56" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="220" y="82" text-anchor="middle" font-size="18" fill="#222222">目的と制約を伝える</text>
+<rect x="100" y="116" width="240" height="56" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="1"/>
+<text x="220" y="150" text-anchor="middle" font-size="18" fill="#222222">質問して仕様化</text>
+<text x="465" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">計画</text>
+<rect x="345" y="48" width="240" height="56" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="465" y="82" text-anchor="middle" font-size="18" fill="#222222">計画を承認・修正</text>
+<rect x="345" y="116" width="240" height="56" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="1"/>
+<text x="465" y="150" text-anchor="middle" font-size="18" fill="#222222">探索して計画案を作る</text>
+<text x="710" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">実装</text>
+<rect x="590" y="48" width="240" height="56" rx="8" fill="#f5f5f5" stroke="#5c5c5c" stroke-width="2" stroke-dasharray="8 5"/>
+<text x="710" y="82" text-anchor="middle" font-size="18" fill="#222222">AIに任せる</text>
+<rect x="590" y="116" width="240" height="56" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="1"/>
+<text x="710" y="150" text-anchor="middle" font-size="18" fill="#222222">実装して検証を回す</text>
+<text x="955" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">結果</text>
+<rect x="835" y="48" width="240" height="56" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="955" y="82" text-anchor="middle" font-size="18" fill="#222222">証拠を見て合否を判断</text>
+<rect x="835" y="116" width="240" height="56" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="1"/>
+<text x="955" y="150" text-anchor="middle" font-size="18" fill="#222222">証拠を示す</text>
+<text x="55" y="84" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">人</text>
+<text x="55" y="152" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">AI</text>
+</svg>

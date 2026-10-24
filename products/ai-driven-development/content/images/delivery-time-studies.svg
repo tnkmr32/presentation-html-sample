@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 200" role="img" font-family="sans-serif">
+<title>作業時間の変化は、Copilot実験(2023)で−55.8%、METR実測(2025)で+19%(遅延)。METRの事前予想は−24%</title>
+<defs><marker id="ar" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><polygon points="0,0 12,6 0,12" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="1100" height="200" fill="#f5f5f5"/>
+<text x="340" y="45" text-anchor="end" font-size="18" fill="#222222">Copilot実験(2023)</text>
+<text x="340" y="89" text-anchor="end" font-size="18" fill="#222222">METR事前予想</text>
+<text x="340" y="133" text-anchor="end" font-size="18" fill="#222222">METR実測(2025)</text>
+<rect x="391.8" y="26" width="435.2" height="34" rx="2" fill="#66d6e2" stroke="#222222" stroke-width="2"/>
+<text x="609.4" y="49" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">−55.8%(短縮)</text>
+<rect x="639.8" y="70" width="187.2" height="34" rx="2" fill="#f5f5f5" stroke="#222222" stroke-width="2" stroke-dasharray="8 5"/>
+<text x="733.4" y="93" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">−24%(予想)</text>
+<rect x="827" y="114" width="148.2" height="34" rx="2" fill="#66d6e2" stroke="#222222" stroke-width="2"/>
+<text x="901.1" y="137" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">+19%(遅延)</text>
+<line x1="827" y1="16" x2="827" y2="154" stroke="#222222" stroke-width="3"/>
+<line x1="359" y1="154" x2="1061" y2="154" stroke="#5c5c5c" stroke-width="2"/>
+<line x1="359.0" y1="154" x2="359.0" y2="160" stroke="#5c5c5c" stroke-width="2"/>
+<text x="359.0" y="178" text-anchor="middle" font-size="18" fill="#222222">−60</text>
+<line x1="593.0" y1="154" x2="593.0" y2="160" stroke="#5c5c5c" stroke-width="2"/>
+<text x="593.0" y="178" text-anchor="middle" font-size="18" fill="#222222">−30</text>
+<line x1="827.0" y1="154" x2="827.0" y2="160" stroke="#5c5c5c" stroke-width="2"/>
+<text x="827.0" y="178" text-anchor="middle" font-size="18" fill="#222222">0%</text>
+<line x1="1061.0" y1="154" x2="1061.0" y2="160" stroke="#5c5c5c" stroke-width="2"/>
+<text x="1061.0" y="178" text-anchor="middle" font-size="18" fill="#222222">+30</text>
+<text x="710" y="198" text-anchor="middle" font-size="18" fill="#222222">作業時間の変化(AIなし比、%。マイナスは短縮)</text>
+</svg>
