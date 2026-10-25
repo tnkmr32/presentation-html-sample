@@ -11,6 +11,29 @@ Markdown と画像ファイルでコンテンツを管理する、HTML + CSS 製
 npm ci
 ```
 
+### Windows で通知をクリックして移動する(任意)
+
+Claude Code の応答完了を Windows のトースト通知で知らせ、クリックすると該当の画面へ移動できます。
+VSCode から使っているときは VSCode のウィンドウへ、Windows Terminal から使っているときは該当タブへ移動します。
+
+前提:
+- Windows 側に VSCode(または Windows Terminal)がインストールされていること
+- WSL(または Git Bash)から実行すること
+
+登録(PC ごとに 1 回。リポジトリを移動したら再実行):
+
+```sh
+.claude/bin/setup-windows-notify
+```
+
+解除:
+
+```sh
+.claude/bin/setup-windows-notify --remove
+```
+
+注意: `.claude/hooks/*.sh` は LF の改行で保存してください。CRLF になると hook が動きません。
+
 ## ビルド
 
 ```sh
