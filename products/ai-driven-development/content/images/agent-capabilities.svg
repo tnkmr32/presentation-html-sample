@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 200" role="img" font-family="sans-serif">
+<title>人が目的を伝えると、AIエージェントが読む・実行する・変更する・結果を見て直すを自律で行い、コードと検証結果を返す</title>
+<defs><marker id="ar" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><polygon points="0,0 12,6 0,12" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="1100" height="200" fill="#f5f5f5"/>
+<rect x="20" y="45" width="170" height="110" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="105" y="92" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">人</text>
+<text x="105" y="126" text-anchor="middle" font-size="18" fill="#222222">目的を伝える</text>
+<line x1="194" y1="100" x2="228" y2="100" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<rect x="232" y="15" width="648" height="170" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="556" y="46" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">AIエージェント(自律で動く)</text>
+<rect x="244" y="74" width="150" height="76" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="2"/>
+<text x="319" y="119" text-anchor="middle" font-size="18" fill="#222222">読む</text>
+<rect x="402" y="74" width="150" height="76" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="2"/>
+<text x="477" y="119" text-anchor="middle" font-size="18" fill="#222222">実行する</text>
+<rect x="560" y="74" width="150" height="76" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="2"/>
+<text x="635" y="119" text-anchor="middle" font-size="18" fill="#222222">変更する</text>
+<rect x="718" y="74" width="150" height="76" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="2"/>
+<text x="793" y="119" text-anchor="middle" font-size="18" fill="#222222">結果を見て直す</text>
+<line x1="884" y1="100" x2="916" y2="100" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<rect x="920" y="45" width="160" height="110" rx="8" fill="#ebebeb" stroke="#222222" stroke-width="3"/>
+<text x="1000" y="92" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">成果</text>
+<text x="1000" y="126" text-anchor="middle" font-size="18" fill="#222222">コードと検証結果</text>
+</svg>

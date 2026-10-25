@@ -91,6 +91,9 @@ function loadDeck(slidesFile) {
   });
 
   // セクションを使う場合、すべての本文スライドがいずれかのセクションに属するようにする。
+  // 扉スライドの番号(目次の項番と一致する)
+  let sectionNumber = 0;
+  for (const s of contentSlides) if (s.kind === "section") s.number = ++sectionNumber;
   if (contentSlides.some((s) => s.kind === "section") && contentSlides[0].kind !== "section") {
     throw new Error(`${label}: when using sections, the first slide after the title must be a "# セクション名" section`);
   }
@@ -139,16 +142,26 @@ function renderTocSlide(contentSlides) {
 function renderSectionSlide(slide) {
   return `
     <section class="slide slide--section">
+      <div class="section-band" aria-hidden="true"><span class="section-num">${String(slide.number).padStart(2, "0")}</span></div>
       <h1>${escapeHtml(slide.title)}</h1>
     </section>`;
 }
 
+// 本文末尾の <small> だけの段落(出典などの注記)を本文から切り出す。
+// 注記はスライドの下端にそろえて表示する。
+const NOTES_RE = /(?:\s*<p><small>(?:(?!<\/p>)[\s\S])*<\/small><\/p>)+\s*$/;
+
 function renderContentSlide(slide) {
   if (slide.kind === "section") return renderSectionSlide(slide);
+  let body = marked.parse(slide.body || "");
+  const notesMatch = body.match(NOTES_RE);
+  const notes = notesMatch ? notesMatch[0].trim() : "";
+  if (notes) body = body.slice(0, notesMatch.index);
   return `
     <section class="slide slide--content">
       <header><h1>${escapeHtml(slide.title)}</h1></header>
-      <div class="body">${marked.parse(slide.body || "")}</div>
+      <div class="body">${body}</div>
+      ${notes ? `<footer class="notes">${notes}</footer>` : ""}
     </section>`;
 }
 
@@ -167,11 +180,12 @@ function copyDir(src, dest) {
 }
 
 function buildHtml(deck) {
-  const slidesHtml = [
+  const slides = [
     renderTitleSlide(deck),
     ...(deck.contentSlides.length ? [renderTocSlide(deck.contentSlides)] : []),
     ...deck.contentSlides.map(renderContentSlide),
-  ].join("\n");
+  ];
+  const slidesHtml = slides.join("\n");
 
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -185,7 +199,7 @@ function buildHtml(deck) {
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="deck">
+<div class="deck" style="--total: '${slides.length}'">
 ${slidesHtml}
 </div>
 <div class="deck-nav">

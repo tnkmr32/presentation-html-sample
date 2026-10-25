@@ -1,5 +1,21 @@
 {
   "language": "japanese",
+  "permissions": {
+    "allow": [
+      "Read(~/Projects/**)",
+      "Write(~/Projects/**)",
+      "Edit(~/Projects/**)",
+      "Bash(python3 *)",
+      "Bash(python3 -)",
+      "Bash(pip3 install *)",
+      "Bash(curl -sL *)",
+      "Bash(awk *)",
+      "Bash(ls *)",
+      "Bash(diff *)",
+      "Bash(cd ~/Projects/presentation-html-sample)",
+      "Bash(cd ~/Projects/presentation-html-sample/*)"
+    ]
+  },
   "hooks": {
     "Stop": [
       {

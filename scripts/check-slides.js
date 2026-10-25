@@ -26,7 +26,7 @@ const LIMITS = {
 };
 
 // 本文中の画像の表示上限(1280×720 での px)。src/style.css の .slide--content .body img
-// (max-width: 100% = 本文幅 約1100px、max-height: 35vh = 252px)に合わせる。
+// (max-width: 100% = 本文幅 約1100px、max-height: 35cqh = 252px)に合わせる。
 // 値の根拠は .claude/rules/slide-authoring.md「画像」を参照。テンプレートを変えたら更新する。
 const IMG_MAX = { width: 1100, height: 252 };
 const MIN_EFFECTIVE_FONT_PX = 16;
@@ -199,6 +199,8 @@ function checkHtml(product) {
 
   const withoutFigure = [];
   let contentSlides = 0;
+  // 同じ見出し行の表は、幅・列幅をそろえる(F-LIST)。見出し行の文言 → 最初に見つけた表の寸法指定。
+  const tableLayouts = new Map();
 
   slides.forEach((slide, i) => {
     const no = `slide ${i + 1}`;
@@ -229,17 +231,37 @@ function checkHtml(product) {
       const cols = ((table.match(/<tr\b[\s\S]*?<\/tr>/) || [""])[0].match(/<t[hd]\b/g) || []).length;
       if (rows - 1 > LIMITS.tableRows) report("warning", "F-DENSITY", no, `表のデータ行が ${rows - 1} 行(目安 ${LIMITS.tableRows} 行以内)`);
       if (cols > LIMITS.tableCols) report("warning", "F-DENSITY", no, `表の列が ${cols} 列(目安 ${LIMITS.tableCols} 列以内)`);
+
+      // 項目列(各行の1列目)に強調がない(F-LIST)。
+      if (/<tr\b[^>]*>\s*<td\b[^>]*>\s*<(strong|b)\b/.test(table)) {
+        report("warning", "F-LIST", no, "表の項目列(1列目)が太字になっている。強調を付けず、内容列と同じ文字にする");
+      }
+      // 同じ見出し行の表は、幅・列幅の指定が同じ(F-LIST)。
+      const headKey = (table.match(/<tr\b[\s\S]*?<\/tr>/) || [""])[0].match(/<th\b[\s\S]*?<\/th>/g)?.map(stripTags).join("|");
+      const layout = (table.match(/<table\b[^>]*>/) || [""])[0] + ((table.match(/<colgroup[\s\S]*?<\/colgroup>/) || [""])[0]);
+      if (headKey) {
+        if (!tableLayouts.has(headKey)) tableLayouts.set(headKey, { layout, no });
+        else if (tableLayouts.get(headKey).layout !== layout) {
+          report("warning", "F-LIST", no, `見出し行が同じ表(${headKey})の幅・列幅の指定が ${tableLayouts.get(headKey).no} と違う。同じ構成のスライドは表の幅をそろえる`);
+        }
+      }
     }
 
     // 目次は見出しの再掲のため、見出しの検査と重複しないよう除く。
     if (!/slide--toc/.test(slide)) checkEmojiHtml(slide, no);
 
     if (/slide--content/.test(slide)) {
-      const body = (slide.match(/<div class="body">([\s\S]*)<\/div>/) || [])[1] || "";
+      // 下端の注記(<footer class="notes">)も本文の分量に含める。
+      const body = (slide.match(/<div class="body">([\s\S]*)<\/section>/) || [])[1] || "";
+      // 参考文献スライド(id="ref-n" を持つ)は項目数・文字数の目安の対象外(収まりは pdf のはみ出し警告で見る)。
+      const isRefSlide = /\sid="ref-\d+"/.test(body);
       const bullets = (body.match(/<li\b/g) || []).length;
-      if (bullets > LIMITS.bulletsPerSlide) report("warning", "F-DENSITY", no, `箇条書きが ${bullets} 項目(目安 ${LIMITS.bulletsPerSlide} 項目以内)`);
+      if (!isRefSlide && bullets > LIMITS.bulletsPerSlide) report("warning", "F-DENSITY", no, `箇条書きが ${bullets} 項目(目安 ${LIMITS.bulletsPerSlide} 項目以内)`);
+      // 「項目: 説明」形式の箇条書きが2項目以上ある(F-LIST)。
+      const labeled = (body.match(/<li\b[\s\S]*?<\/li>/g) || []).filter((li) => /^[^:：。、]{1,12}[:：]\s*\S/.test(stripTags(li)));
+      if (labeled.length >= 2) report("warning", "F-LIST", no, `「項目: 説明」形式の箇条書きが ${labeled.length} 項目ある。項目と内容の2列の表にする`);
       const chars = stripTags(body.replace(/<table[\s\S]*?<\/table>/g, "")).length;
-      if (chars > LIMITS.charsPerSlide) report("warning", "F-DENSITY", no, `本文が ${chars} 文字(目安 ${LIMITS.charsPerSlide} 文字以内)`);
+      if (!isRefSlide && chars > LIMITS.charsPerSlide) report("warning", "F-DENSITY", no, `本文が ${chars} 文字(目安 ${LIMITS.charsPerSlide} 文字以内)`);
 
       // 参考文献スライド(id="ref-n" を持つ)は視覚化の対象外。
       if (!/\sid="ref-\d+"/.test(body)) {

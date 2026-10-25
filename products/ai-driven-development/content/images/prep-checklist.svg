@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 200" role="img" font-family="sans-serif">
+<title>準備は自動検証、指示書、権限と自動化の3つ。それぞれの具体物を示す</title>
+<defs><marker id="ar" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><polygon points="0,0 12,6 0,12" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="1100" height="200" fill="#f5f5f5"/>
+<rect x="20" y="10" width="330" height="180" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<rect x="20" y="10" width="330" height="48" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="185" y="43" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">1 自動検証</text>
+<text x="185" y="98" text-anchor="middle" font-size="18" fill="#222222">テスト</text>
+<text x="185" y="132" text-anchor="middle" font-size="18" fill="#222222">ビルド</text>
+<text x="185" y="166" text-anchor="middle" font-size="18" fill="#222222">リンター</text>
+<rect x="385" y="10" width="330" height="180" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<rect x="385" y="10" width="330" height="48" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="550" y="43" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">2 指示書</text>
+<text x="550" y="98" text-anchor="middle" font-size="18" fill="#222222">コマンド</text>
+<text x="550" y="132" text-anchor="middle" font-size="18" fill="#222222">コード規約</text>
+<text x="550" y="166" text-anchor="middle" font-size="18" fill="#222222">テスト手順</text>
+<rect x="750" y="10" width="330" height="180" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<rect x="750" y="10" width="330" height="48" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="915" y="43" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">3 権限と自動化</text>
+<text x="915" y="98" text-anchor="middle" font-size="18" fill="#222222">事前承認</text>
+<text x="915" y="132" text-anchor="middle" font-size="18" fill="#222222">フック: 毎回必ず自動実行</text>
+</svg>

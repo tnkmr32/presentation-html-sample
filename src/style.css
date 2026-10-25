@@ -1,12 +1,12 @@
 :root {
   /* ---------- カラーパレット: モノトーン + ティール ----------
-     ベースカラー rgb(0, 181, 200) を面のアクセント、青 rgb(51, 53, 227) を文字のアクセントに使い、
+     ベースカラー rgb(102, 214, 226) を面のアクセント、青 rgb(51, 53, 227) を文字のアクセントに使い、
      それ以外はモノトーン(無彩色)で構成する。
      コントラスト比は背景色 --paper(#f5f5f5)に対する値。文字は 4.5:1 以上、図形・線は 3:1 以上を使う。 */
 
   /* アクセントカラー(ティール) */
-  --accent: #00b5c8;         /* ベースカラー。図形・グラフの主系列などの面に使う。
-                                背景上では 2.28:1 のため文字・細線には使わない(濃い文字 --ink を載せると 6.40:1) */
+  --accent: #66d6e2;         /* ベースカラー。図形・グラフの主系列などの面に使う。
+                                背景上では 1.57:1 のため文字・細線には使わない(濃い文字 --ink を載せると 9.30:1) */
   --accent-strong: #3335e3;  /* 文字用のアクセント rgb(51, 53, 227)。強調文字・細線(6.98:1、--surface 上で 6.38:1) */
 
   /* 背景色・文字色(モノトーン) */
@@ -19,6 +19,10 @@
   --code-bg: #222222;        /* コードブロックの背景 */
   --font-sans: "BIZ UDPGothic", "BIZ UDPゴシック", "Hiragino Sans", "Yu Gothic", "Segoe UI", system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* スライドの表示サイズ。ウィンドウの縦横比にかかわらず 16:9 を保ち、余白は --stage で埋める。 */
+  --slide-w: min(100vw, calc(100vh * 16 / 9));
+  --slide-h: min(100vh, calc(100vw * 9 / 16));
 }
 
 * {
@@ -34,11 +38,15 @@ body {
   color: var(--ink);
 }
 
+/* 16:9 の枠を画面中央に置く。スライド内の寸法は cqw / cqh(この枠の幅・高さ基準)で指定する。 */
 .deck {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: var(--slide-w);
+  height: var(--slide-h);
   overflow: hidden;
+  container-type: size;
 }
 
 .slide {
@@ -48,7 +56,7 @@ body {
   flex-direction: column;
   width: 100%;
   height: 100%;
-  padding: 6vw 7vw;
+  padding: 6cqw 7cqw;
   background: var(--paper);
   overflow: hidden;
 }
@@ -67,29 +75,29 @@ body {
 
 .slide--title h1 {
   margin: 0;
-  font-size: clamp(2.6rem, 6.6vw, 5.4rem);
+  font-size: clamp(2.6rem, 6.6cqw, 5.4rem);
   line-height: 1.25;
 }
 
 .slide--title .subtitle {
   margin: 1.2em 0 0;
-  font-size: clamp(1.2rem, 2.4vw, 1.9rem);
+  font-size: clamp(1.2rem, 2.4cqw, 1.9rem);
   color: var(--ink-soft);
 }
 
 .slide--title .meta {
   position: absolute;
-  bottom: 6vw;
+  bottom: 6cqw;
   display: flex;
   gap: 1.5em;
-  font-size: clamp(0.95rem, 1.35vw, 1.2rem);
+  font-size: clamp(0.95rem, 1.35cqw, 1.2rem);
   color: var(--ink-soft);
 }
 
 /* ---------- table of contents pattern ---------- */
 .slide--toc h1 {
   margin: 0 0 0.6em;
-  font-size: clamp(2.1rem, 4.3vw, 3.6rem);
+  font-size: clamp(2.1rem, 4.3cqw, 3.6rem);
 }
 
 .slide--toc ol {
@@ -97,7 +105,7 @@ body {
   counter-reset: toc;
   margin: 0;
   padding: 0;
-  font-size: clamp(1.35rem, 2.6vw, 2.4rem);
+  font-size: clamp(1.35rem, 2.6cqw, 2.4rem);
 }
 
 .slide--toc li {
@@ -118,14 +126,41 @@ body {
 }
 
 /* ---------- section pattern ---------- */
+/* 左 30% をティールの太い帯にして大きな番号を載せ、扉スライドだと一目で分かるようにする。
+   番号(--ink)に対するコントラストは
+   (単色の --accent 上で 9.30:1)。 */
 .slide--section {
+  flex-direction: row;
+  align-items: stretch;
+  padding: 0;
+}
+
+.slide--section.is-active {
+  display: flex;
+}
+
+.slide--section .section-band {
+  flex: none;
+  width: 30%;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  border-left: 0.6vw solid var(--accent);
+  background: var(--accent);
+}
+
+.slide--section .section-num {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: clamp(5rem, 13cqw, 11rem);
+  line-height: 1;
+  color: var(--ink);
 }
 
 .slide--section h1 {
+  align-self: center;
   margin: 0;
-  font-size: clamp(2.3rem, 5vw, 4.2rem);
+  padding: 0 7cqw;
+  font-size: clamp(2.3rem, 5cqw, 4.2rem);
   line-height: 1.3;
 }
 
@@ -136,14 +171,14 @@ body {
 
 .slide--content h1 {
   margin: 0 0 0.6em;
-  font-size: clamp(1.9rem, 3.8vw, 3.1rem);
+  font-size: clamp(1.9rem, 3.8cqw, 3.1rem);
 }
 
 .slide--content .body {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+  font-size: clamp(1.2rem, 1.8cqw, 1.6rem);
   line-height: 1.7;
 }
 
@@ -157,9 +192,10 @@ body {
 }
 
 /* 項番は等幅フォントにして、桁数が変わっても位置を揃える。
-   等幅の数字は幅が広く、1.3em の字下げでは左端で切れるため ol だけ広げる。 */
+   等幅の数字は幅が広く、1.3em の字下げでは左端で切れるため ol だけ広げる。
+   2桁の番号(10. 〜 99.)が左端で切れない幅にする。 */
 .slide--content .body ol {
-  padding-left: 2em;
+  padding-left: 2.6em;
 }
 
 .slide--content .body ol > li::marker {
@@ -169,7 +205,7 @@ body {
 .slide--content .body img {
   display: block;
   max-width: 100%;
-  max-height: 35vh;
+  max-height: 35cqh;
   margin: 0.8em auto;
   border-radius: 10px;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
@@ -187,6 +223,18 @@ body {
 
 .slide--content .body strong {
   color: var(--accent-strong);
+}
+
+/* 出典などの注記。本文の量にかかわらずスライドの下端にそろえる(.body が残りの高さを埋める)。 */
+.slide--content .notes {
+  flex: none;
+  padding-top: 0.6em;
+  font-size: clamp(1.2rem, 1.8cqw, 1.6rem);
+  line-height: 1.5;
+}
+
+.slide--content .notes p {
+  margin: 0;
 }
 
 /* カラーパレットの色見本。色は style 属性で var(--xxx) を指定する。 */
@@ -249,8 +297,8 @@ body {
 /* ---------- chrome: nav / progress ---------- */
 .deck-nav {
   position: fixed;
-  bottom: 3vw;
-  right: 4vw;
+  bottom: calc((100vh - var(--slide-h)) / 2 + var(--slide-w) * 0.03);
+  right: calc((100vw - var(--slide-w)) / 2 + var(--slide-w) * 0.04);
   display: flex;
   align-items: center;
   gap: 0.8em;
@@ -285,15 +333,30 @@ body {
     position: static;
     width: auto;
     height: auto;
+    margin: 0;
+    counter-reset: page-no;
+    /* 印刷時は枠の大きさを持たないため、cqw / cqh はページ(1280×720)基準になる。 */
+    container-type: normal;
   }
 
   .slide {
-    position: static !important;
+    position: relative !important;
     display: flex !important;
+    counter-increment: page-no;
     width: 100vw;
     height: 100vh;
     page-break-after: always;
     break-after: page;
+  }
+
+  /* 画面の .deck-nav と同じ位置(右下)に「現在 / 総数」を出す。 */
+  .slide::after {
+    content: counter(page-no) " / " var(--total);
+    position: absolute;
+    bottom: 3cqw;
+    right: 4cqw;
+    font-size: 16px;
+    color: var(--ink-soft);
   }
 
   .slide:last-child {

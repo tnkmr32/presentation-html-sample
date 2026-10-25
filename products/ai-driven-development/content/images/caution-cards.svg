@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 200" role="img" font-family="sans-serif">
+<title>注意点は過信、文脈の劣化、検証漏れ。対策はそれぞれ実測、会話のリセット、検証できなければ出荷しない</title>
+<defs><marker id="ar" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><polygon points="0,0 12,6 0,12" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="1100" height="200" fill="#f5f5f5"/>
+<rect x="20" y="6" width="330" height="188" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<rect x="20" y="6" width="330" height="40" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="185" y="36" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">過信</text>
+<text x="185" y="76" text-anchor="middle" font-size="18" fill="#222222">予想は24%短縮</text>
+<text x="185" y="102" text-anchor="middle" font-size="18" fill="#222222">実測は19%遅延</text>
+<line x1="30" y1="118" x2="340" y2="118" stroke="#5c5c5c" stroke-width="2"/>
+<text x="185" y="148" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">対策</text>
+<text x="185" y="178" text-anchor="middle" font-size="18" fill="#222222">実測で確かめる</text>
+<rect x="385" y="6" width="330" height="188" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<rect x="385" y="6" width="330" height="40" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="550" y="36" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">文脈の劣化</text>
+<text x="550" y="76" text-anchor="middle" font-size="18" fill="#222222">会話が長いと</text>
+<text x="550" y="102" text-anchor="middle" font-size="18" fill="#222222">誤りが増える</text>
+<line x1="395" y1="118" x2="705" y2="118" stroke="#5c5c5c" stroke-width="2"/>
+<text x="550" y="148" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">対策</text>
+<text x="550" y="178" text-anchor="middle" font-size="18" fill="#222222">作業ごとに会話をリセット</text>
+<rect x="750" y="6" width="330" height="188" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<rect x="750" y="6" width="330" height="40" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="3"/>
+<text x="915" y="36" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">検証漏れ</text>
+<text x="915" y="76" text-anchor="middle" font-size="18" fill="#222222">もっともらしい実装が</text>
+<text x="915" y="102" text-anchor="middle" font-size="18" fill="#222222">穴を持つ</text>
+<line x1="760" y1="118" x2="1070" y2="118" stroke="#5c5c5c" stroke-width="2"/>
+<text x="915" y="148" text-anchor="middle" font-size="18" font-weight="bold" fill="#222222">対策</text>
+<text x="915" y="178" text-anchor="middle" font-size="18" fill="#222222">検証できなければ出荷しない</text>
+</svg>

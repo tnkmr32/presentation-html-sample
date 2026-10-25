@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 200" role="img" font-family="sans-serif">
+<title>AIが質問して要件を聞き出し、仕様書に書き出し、新しい作業で実装し、確認手順で検証する</title>
+<defs><marker id="ar" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><polygon points="0,0 12,6 0,12" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="1100" height="200" fill="#f5f5f5"/>
+<rect x="30" y="50" width="230" height="100" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="145" y="36" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">1</text>
+<text x="145" y="94.0" text-anchor="middle" font-size="18" fill="#222222">AIが質問して</text>
+<text x="145" y="118.0" text-anchor="middle" font-size="18" fill="#222222">要件を聞き出す</text>
+<line x1="262" y1="100" x2="298" y2="100" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<rect x="300" y="50" width="230" height="100" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="4"/>
+<text x="415" y="36" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">2</text>
+<text x="415" y="94.0" text-anchor="middle" font-size="18" fill="#222222">仕様書に</text>
+<text x="415" y="118.0" text-anchor="middle" font-size="18" fill="#222222">書き出す</text>
+<line x1="532" y1="100" x2="568" y2="100" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<rect x="570" y="50" width="230" height="100" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="685" y="36" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">3</text>
+<text x="685" y="94.0" text-anchor="middle" font-size="18" fill="#222222">新しい作業で</text>
+<text x="685" y="118.0" text-anchor="middle" font-size="18" fill="#222222">実装</text>
+<line x1="802" y1="100" x2="838" y2="100" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<rect x="840" y="50" width="230" height="100" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<text x="955" y="36" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">4</text>
+<text x="955" y="94.0" text-anchor="middle" font-size="18" fill="#222222">確認手順で</text>
+<text x="955" y="118.0" text-anchor="middle" font-size="18" fill="#222222">検証</text>
+</svg>

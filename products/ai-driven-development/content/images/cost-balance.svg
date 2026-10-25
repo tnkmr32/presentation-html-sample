@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 200" role="img" font-family="sans-serif">
+<title>人の実装時間は減るが、AIの利用量と人の確認作業が加わるため、合計で比べる</title>
+<defs><marker id="ar" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><polygon points="0,0 12,6 0,12" fill="#222222"/></marker></defs>
+<rect x="0" y="0" width="1100" height="200" fill="#f5f5f5"/>
+<rect x="20" y="25" width="260" height="150" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<circle cx="64" cy="75" r="26" fill="#f5f5f5" stroke="#222222" stroke-width="3"/>
+<text x="64" y="85" text-anchor="middle" font-size="28" font-weight="bold" fill="#222222">−</text>
+<text x="180" y="83" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">減る</text>
+<text x="150" y="138" text-anchor="middle" font-size="22" fill="#222222">人の実装時間</text>
+<rect x="300" y="25" width="260" height="150" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<circle cx="344" cy="75" r="26" fill="#f5f5f5" stroke="#222222" stroke-width="3"/>
+<text x="344" y="85" text-anchor="middle" font-size="28" font-weight="bold" fill="#222222">+</text>
+<text x="460" y="83" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">増える</text>
+<text x="430" y="138" text-anchor="middle" font-size="22" fill="#222222">AIの利用量</text>
+<rect x="580" y="25" width="260" height="150" rx="8" fill="#ebebeb" stroke="#5c5c5c" stroke-width="2"/>
+<circle cx="624" cy="75" r="26" fill="#f5f5f5" stroke="#222222" stroke-width="3"/>
+<text x="624" y="85" text-anchor="middle" font-size="28" font-weight="bold" fill="#222222">=</text>
+<text x="740" y="83" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">残る</text>
+<text x="710" y="138" text-anchor="middle" font-size="22" fill="#222222">人の確認作業</text>
+<line x1="844" y1="100" x2="886" y2="100" stroke="#222222" stroke-width="3" marker-end="url(#ar)"/>
+<rect x="890" y="25" width="190" height="150" rx="8" fill="#66d6e2" stroke="#222222" stroke-width="4"/>
+<text x="985" y="92" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">合計で</text>
+<text x="985" y="124" text-anchor="middle" font-size="22" font-weight="bold" fill="#222222">比べる</text>
+</svg>
