@@ -1,11 +1,12 @@
 #!/bin/bash
 # Windows で、Claude Code の通知(.claude/hooks/notify.sh)をクリックしたときに
-# Windows Terminal の該当タブへ移動できるよう、claude-focus: プロトコルを登録する(HKCU のみ)。
+# Windows Terminal の該当タブ(VSCode から動いているときは VSCode のウィンドウ)へ移動できるよう、
+# claude-focus: プロトコルを登録する(HKCU のみ)。
 # WSL・Git Bash のどちらからでも実行できる。リポジトリを移動したら再実行する。
 # 使い方: setup-windows-notify            登録する
 #         setup-windows-notify --remove   登録を削除する
 
-script="$(cd "$(dirname "$0")/../hooks" && pwd)/focus-windows-terminal.ps1"
+script="$(cd "$(dirname "$0")/../hooks" && pwd)/focus-window.ps1"
 if command -v wslpath >/dev/null 2>&1; then
   script=$(wslpath -w "$script")
 elif command -v cygpath >/dev/null 2>&1; then

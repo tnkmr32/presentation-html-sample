@@ -56,11 +56,23 @@ fi
 # Windows のトースト通知。文字列は base64 で渡し、PowerShell 側で XML エスケープする
 # (WSL から Windows のプロセスへ引数を渡すときの引用符・文字コードの崩れを避ける)。
 # claude-focus: プロトコルが登録済み(.claude/bin/setup-windows-notify)なら、通知をクリックしたときに
-# Windows Terminal でタブ名にセッション名を含むタブへ移動する(focus-windows-terminal.ps1)
+# Windows Terminal でタブ名にセッション名を含むタブへ、VSCode から動いているときは VSCode のウィンドウへ移動する
+# (focus-window.ps1)
 windows_toast() {
   b64() { printf '%s' "$1" | base64 | tr -d '\r\n'; }
   local launch script
-  launch="claude-focus:$(b64 "$title" | tr '+/' '-_' | tr -d '=')"
+  # 通知の送り主(通知の上部に出るアプリ名とアイコン)の AppUserModelID
+  local app='{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\WindowsPowerShell\v1.0\powershell.exe'
+  # VSCode(拡張・統合ターミナル)から動いているときは、VSCode のウィンドウ(タイトルにフォルダ名を含む)へ移動し、
+  # 送り主も VSCode にする
+  if [ "$TERM_PROGRAM" = "vscode" ] || [ "$CLAUDE_CODE_ENTRYPOINT" = "claude-vscode" ]; then
+    local folder=${CLAUDE_PROJECT_DIR:-$cwd}
+    folder=${folder%[/\\]}
+    launch="claude-focus:code/$(b64 "${folder##*[/\\]}" | tr '+/' '-_' | tr -d '=')"
+    app='Microsoft.VisualStudioCode'
+  else
+    launch="claude-focus:$(b64 "$title" | tr '+/' '-_' | tr -d '=')"
+  fi
   script="\$ErrorActionPreference = 'Stop'
 function D(\$s) { [Security.SecurityElement]::Escape([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(\$s))) }
 [void][Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime]
@@ -72,8 +84,7 @@ if (Test-Path 'HKCU:\\Software\\Classes\\claude-focus\\shell\\open\\command') { 
 \$toast = [Windows.UI.Notifications.ToastNotification]::new(\$xml)
 \$toast.Tag = '${session_id:0:36}'
 \$toast.Group = 'claude'
-\$app = '{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\\WindowsPowerShell\\v1.0\\powershell.exe'
-[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier(\$app).Show(\$toast)"
+[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('$app').Show(\$toast)"
   # PowerShell の起動は 1 秒ほどかかるため、hook を待たせないようバックグラウンドで実行する
   powershell.exe -NoProfile -NonInteractive -WindowStyle Hidden -EncodedCommand \
     "$(printf '%s' "$script" | iconv -f UTF-8 -t UTF-16LE | base64 | tr -d '\r\n')" \
